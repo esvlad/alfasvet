@@ -35,6 +35,8 @@ class ControllerCommonHeader extends Controller {
 		$data['lang'] = $this->language->get('code');
 		$data['direction'] = $this->language->get('direction');
 
+		$data['search_action'] = $this->url->link('product/search');
+
 		$data['name'] = $this->config->get('config_name');
 
 		if (is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
@@ -48,10 +50,24 @@ class ControllerCommonHeader extends Controller {
 		// Wishlist
 		if ($this->customer->isLogged()) {
 			$this->load->model('account/wishlist');
+			$data['customer'] = 1;
+			$customer_name = $this->customer->getFirstName();
+
+			$names = explode(' ', $customer_name);
+			$data['customer_name'] = $names[0];
 
 			$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), $this->model_account_wishlist->getTotalWishlist());
+
+			$data['class'] = 'logged';
 		} else {
+			$data['customer'] = 0;
 			$data['text_wishlist'] = sprintf($this->language->get('text_wishlist'), (isset($this->session->data['wishlist']) ? count($this->session->data['wishlist']) : 0));
+
+			$data['class'] = 'nologged';
+		}
+
+		if(stripos($_SERVER['HTTP_USER_AGENT'], 'ipad') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'iphone') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'mac') !== false){
+			$data['class'] .= ' mac';
 		}
 
 		$data['text_logged'] = sprintf($this->language->get('text_logged'), $this->url->link('account/account', '', true), $this->customer->getFirstName(), $this->url->link('account/logout', '', true));
@@ -70,12 +86,39 @@ class ControllerCommonHeader extends Controller {
 		$data['checkout'] = $this->url->link('checkout/checkout', '', true);
 		$data['contact'] = $this->url->link('information/contact');
 		$data['telephone'] = $this->config->get('config_telephone');
+		$data['open'] = $this->config->get('config_open');
+		$data['email'] = $this->config->get('config_email');
+		$data['shops'] = $this->url->link('information/information/shops');
+		$data['faq'] = $this->url->link('information/faq');
+		$data['stocks'] = $this->url->link('information/stocks');
+		$data['news'] = $this->url->link('information/news');
+		$data['vakancy'] = $this->url->link('information/vakancy');
+		$data['calculator'] = $this->url->link('information/information/calculator');
+		
+		$data['politics'] = $this->url->link('information/information', 'information_id=3');
+		$data['about_us'] = $this->url->link('information/information', 'information_id=4');
+		$data['delivery'] = $this->url->link('information/information', 'information_id=6');
+		$data['gorantii'] = $this->url->link('information/information', 'information_id=7');
+		$data['vozvrat'] = $this->url->link('information/information', 'information_id=8');
+		$data['marketing'] = $this->url->link('information/information', 'information_id=9');
+		$data['products'] = $this->url->link('information/information', 'information_id=10');
+		$data['payment'] = $this->url->link('information/information', 'information_id=11');
+		$data['optovikam'] = $this->url->link('information/information', 'information_id=15');
+		$data['proizvodstvo'] = $this->url->link('information/information', 'information_id=13');
+		$data['kompanii'] = $this->url->link('information/information', 'information_id=14');
 		
 		$data['language'] = $this->load->controller('common/language');
 		$data['currency'] = $this->load->controller('common/currency');
 		$data['search'] = $this->load->controller('common/search');
 		$data['cart'] = $this->load->controller('common/cart');
 		$data['menu'] = $this->load->controller('common/menu');
+
+		$data['mobile_menu'] = $this->load->controller('common/menu/mobile');
+
+		$data['action_login'] = $this->url->link('account/login', '', true);
+		$data['action_register'] = $this->url->link('account/register', '', true);
+
+		$data['count_cart'] = $this->cart->countProducts();
 
 		return $this->load->view('common/header', $data);
 	}

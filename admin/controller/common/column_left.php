@@ -117,6 +117,36 @@ class ControllerCommonColumnLeft extends Controller {
 					'children' => array()		
 				);					
 			}
+	
+			$catalog[] = array(
+				'name'	   => 'Новости',
+				'href'     => $this->url->link('catalog/news', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+
+			$catalog[] = array(
+				'name'	   => 'Акции',
+				'href'     => $this->url->link('catalog/stocks', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+
+			$catalog[] = array(
+				'name'	   => 'Вакансии',
+				'href'     => $this->url->link('catalog/vakancy', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+
+			$catalog[] = array(
+				'name'	   => 'FAQ',
+				'href'     => $this->url->link('catalog/faq', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
+
+			$catalog[] = array(
+				'name'	   => 'Филиалы',
+				'href'     => $this->url->link('catalog/filials', 'user_token=' . $this->session->data['user_token'], true),
+				'children' => array()		
+			);
 			
 			if ($catalog) {
 				$data['menus'][] = array(

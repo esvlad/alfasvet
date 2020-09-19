@@ -111,7 +111,7 @@ class Image {
      * @param	string	$file
 	 * @param	int		$quality
      */
-	public function save($file, $quality = 90) {
+	public function save($file, $quality = 100) {
 		$info = pathinfo($file);
 
 		$extension = strtolower($info['extension']);
@@ -257,6 +257,15 @@ class Image {
 		$this->width = $bottom_x - $top_x;
 		$this->height = $bottom_y - $top_y;
 	}
+
+	public function to_crop($x1, $y1, $x2, $y2){
+        $this->image = imagecrop($this->image, [
+          'x' => $x1,
+          'y' => $y1,
+          'width' => $x2,
+          'height' => $y2
+        ]);
+    }
 	
 	/**
      * 
@@ -336,4 +345,22 @@ class Image {
 
 		return array($r, $g, $b);
 	}
+
+	public function resizeToHeight($height) 
+    {
+        $ratio = $height / $this->getHeight();
+        $width = $this->getWidth() * $ratio;
+        $this->resize($width,$height);
+        
+        return imagesx($this->image);
+    }
+ 
+    public function resizeToWidth($width) 
+    {
+        $ratio = $width / $this->getWidth();
+        $height = $this->getHeight() * $ratio;
+        $this->resize($width, $height);
+        
+        return imagesy($this->image);
+    }
 }

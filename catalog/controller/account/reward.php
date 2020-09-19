@@ -69,9 +69,23 @@ class ControllerAccountReward extends Controller {
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($reward_total) ? (($page - 1) * 10) + 1 : 0, ((($page - 1) * 10) > ($reward_total - 10)) ? $reward_total : ((($page - 1) * 10) + 10), $reward_total, ceil($reward_total / 10));
 
-		$data['total'] = (int)$this->customer->getRewardPoints();
+		$total = (float)$this->customer->getRewardPoints();
+		$data['total'] = $total;
+
+		$total_text_array = ['бонус','бонуса','бонусов'];
+		$cases = array (2, 0, 1, 1, 1, 2);
+		if(($total - floor($total)) > 0){
+			$data['total_text'] = 'бонусов';
+		} else {
+			$data['total_text'] = $total_text_array[ ((int)$total%100>4 && (int)$total%100<20)? 2: $cases[min((int)$total%10, 5)] ];
+		}		
 
 		$data['continue'] = $this->url->link('account/account', '', true);
+		$data['page'] = 'bonus';
+
+		$bonus_status = $this->model_account_reward->getBonusStatus();
+		$bonus_status_array = ['Начальный', 'Опытный', 'Продвинутый'];
+		$data['bonus_status_name'] = $bonus_status_array[(int)$bonus_status];
 
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');

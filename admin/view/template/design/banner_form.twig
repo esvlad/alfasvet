@@ -23,7 +23,7 @@
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_form }}</h3>
       </div>
-      <div class="panel-body">
+      <div class="panel-body banners">
         <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form-banner" class="form-horizontal">
           <div class="form-group required">
             <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
@@ -68,15 +68,51 @@
                     <td></td>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="image-rows">
                   {% if banner_images[language.language_id] %}
                   {% for banner_image in banner_images[language.language_id] %}
                   <tr id="image-row{{ image_row }}">
-                    <td class="text-left"><input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][title]" value="{{ banner_image.title }}" placeholder="{{ entry_title }}" class="form-control" />
+                    <td class="text-left">
+                      <input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][title]" value="{{ banner_image.title }}" placeholder="{{ entry_title }}" class="form-control" />
+                      <select name="banner_image[{{ language.language_id }}][{{ image_row }}][title_color_id]" id="input-title_color" class="form-control colors">
+                        <option>Цвет текста</option>
+                        {% for color in colors %}
+                        {% if color.id == banner_image.colors.title_color_id %}
+                        <option value="{{color.id}}" selected="selected">{{ color.name }}</option>
+                        {% else %}
+                        <option value="{{color.id}}">{{ color.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
                       {% if error_banner_image[language.language_id][image_row] %}
                       <div class="text-danger">{{ error_banner_image[language.language_id][image_row] }}</div>
-                      {% endif %}</td>
-                    <td class="text-left" style="width: 30%;"><input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][link]" value="{{ banner_image.link }}" placeholder="{{ entry_link }}" class="form-control" /></td>
+                      {% endif %}
+                      <input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][caption]" value="{{ banner_image.caption }}" placeholder="Текст на баннере" class="form-control" />
+                      <select name="banner_image[{{ language.language_id }}][{{ image_row }}][caption_color_id]" id="input-caption_color" class="form-control">
+                        <option>Цвет текста</option>
+                        {% for color in colors %}
+                        {% if color.id == banner_image.colors.caption_color_id %}
+                        <option value="{{color.id}}" selected="selected">{{ color.name }}</option>
+                        {% else %}
+                        <option value="{{color.id}}">{{ color.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td class="text-left" style="width: 30%;">
+                      <input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][link]" value="{{ banner_image.link }}" placeholder="{{ entry_link }}" class="form-control" />
+                      <input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][btn_caption]" value="{{ banner_image.btn_caption }}" placeholder="Текст для кнопки" class="form-control" />
+                      <select name="banner_image[{{ language.language_id }}][{{ image_row }}][btn_caption_color_id]" id="input-btn_caption_color" class="form-control">
+                        <option>Цвет текста</option>
+                        {% for color in colors %}
+                        {% if color.id == banner_image.colors.btn_caption_color_id %}
+                        <option value="{{color.id}}" selected="selected">{{ color.name }}</option>
+                        {% else %}
+                        <option value="{{color.id}}">{{ color.name }}</option>
+                        {% endif %}
+                        {% endfor %}
+                      </select>
+                    </td>
                     <td class="text-center"><a href="" id="thumb-image{{ image_row }}" data-toggle="image" class="img-thumbnail"><img src="{{ banner_image.thumb }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a>
                       <input type="hidden" name="banner_image[{{ language.language_id }}][{{ image_row }}][image]" value="{{ banner_image.image }}" id="input-image{{ image_row }}" /></td>
                     <td class="text-right" style="width: 10%;"><input type="text" name="banner_image[{{ language.language_id }}][{{ image_row }}][sort_order]" value="{{ banner_image.sort_order }}" placeholder="{{ entry_sort_order }}" class="form-control" /></td>
@@ -105,8 +141,8 @@ var image_row = {{ image_row }};
 
 function addImage(language_id) {
 	html  = '<tr id="image-row' + image_row + '">';
-    html += '  <td class="text-left"><input type="text" name="banner_image[' + language_id + '][' + image_row + '][title]" value="" placeholder="{{ entry_title }}" class="form-control" /></td>';	
-	html += '  <td class="text-left" style="width: 30%;"><input type="text" name="banner_image[' + language_id + '][' + image_row + '][link]" value="" placeholder="{{ entry_link }}" class="form-control" /></td>';	
+    html += '  <td class="text-left"><input type="text" name="banner_image[' + language_id + '][' + image_row + '][title]" value="" placeholder="{{ entry_title }}" class="form-control" /><select name="banner_image[' + language_id + '][' + image_row + '][title_color_id]" id="input-title_color" class="form-control colors"><option>Цвет текста</option>{% for color in colors %}<option value="{{color.id}}">{{ color.name }}</option>{% endfor %}</select><input type="text" name="banner_image[' + language_id + '][' + image_row + '][caption]" value="" placeholder="Текст на баннере" class="form-control" /><select name="banner_image[' + language_id + '][' + image_row + '][caption_color_id]" id="input-title_color" class="form-control colors"><option>Цвет текста</option>{% for color in colors %}<option value="{{color.id}}">{{ color.name }}</option>{% endfor %}</select></td>';	
+	html += '  <td class="text-left" style="width: 30%;"><input type="text" name="banner_image[' + language_id + '][' + image_row + '][link]" value="" placeholder="{{ entry_link }}" class="form-control" /><input type="text" name="banner_image[' + language_id + '][' + image_row + '][btn_caption]" value="" placeholder="Текст для кнопки" class="form-control" /><select name="banner_image[' + language_id + '][' + image_row + '][btn_caption_color_id]" id="input-title_color" class="form-control colors"><option>Цвет текста</option>{% for color in colors %}<option value="{{color.id}}">{{ color.name }}</option>{% endfor %}</select></td>';	
 	html += '  <td class="text-center"><a href="" id="thumb-image' + image_row + '" data-toggle="image" class="img-thumbnail"><img src="{{ placeholder }}" alt="" title="" data-placeholder="{{ placeholder }}" /></a><input type="hidden" name="banner_image[' + language_id + '][' + image_row + '][image]" value="" id="input-image' + image_row + '" /></td>';
 	html += '  <td class="text-right" style="width: 10%;"><input type="text" name="banner_image[' + language_id + '][' + image_row + '][sort_order]" value="" placeholder="{{ entry_sort_order }}" class="form-control" /></td>';
 	html += '  <td class="text-left"><button type="button" onclick="$(\'#image-row' + image_row  + ', .tooltip\').remove();" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-minus-circle"></i></button></td>';

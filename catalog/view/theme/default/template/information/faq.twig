@@ -1,0 +1,71 @@
+{{ header }}
+<div id="faq" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>Поддержка</h2>
+  <div class="rowmin faq">
+    <div class="col-lg-8 col-md-7 col-sm-12">
+      {% if faqs %}
+      {% for faq in faqs %}
+      <div class="faq_block" data-faq="{{faq.id}}">
+        <div class="faq_title">{{faq.title}}</div>
+        <div class="faq_description">{{faq.description}}</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+    <div class="col-lg-4 col-md-5 col-sm-12">
+      <div id="specialist"></div>
+      <!--<form id="form-specialst" class="form-horizontal specialst">
+       <div class="form_block">
+        <div class="form-group sname">
+          <img class="sname_img" src="catalog/view/theme/default/image/consultant.png" alt="">
+          <p>Иван Петров</p>
+          <p>Менеджер по продажам</p>
+        </div>
+        <div class="form-group stext">
+          <h2>Спросите специалиста</h2>
+        </div>
+        <div class="form-group required">
+          <div class="col-sm-6">
+            <label class="control-label" for="sname">Имя</label>
+            <input type="text" name="sname" value="" id="sname" class="form-control _required" />
+          </div>
+          <div class="col-sm-6">
+            <label class="control-label" for="sphone">Телефон</label>
+            <input type="text" name="sphone" value="" id="sphone" class="form-control _required" />
+          </div>
+        </div>
+        <div class="form-group required">
+          <div class="col-sm-12">
+            <label class="control-label" for="sanswer">Вопрос</label>
+            <textarea name="sanswer" rows="5" id="sanswer" class="form-control _required"></textarea>
+          </div>
+        </div>
+        <div class="form-group buttons clearfix">
+          <button type="submit" class="btn_review"><span>Задать вопрос</span></button>
+          <div class="text_politics">
+            <span>Нажимая на кнопку, вы соглашаетесь с условиями политики конфиденциальности и обработки персональных данных</span>
+          </div>
+        </div>
+       </div>
+       <div class="form_success"><span>Спасибо, ваше сообщение отправлено, наш специалист свяжется с вами в ближайшее время!</span></div>
+      </form>-->
+    </div>
+  </div>
+</div>
+<script>
+  $('.faq_title').click(function() {
+    if(!$(this).hasClass('on')){
+      $(this).addClass('on');
+      $(this).next().slideDown(150);
+    } else {
+      $(this).removeClass('on');
+      $(this).next().slideUp(150);
+    }
+  });
+</script>
+{{ footer }}

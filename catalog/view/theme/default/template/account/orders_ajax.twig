@@ -1,0 +1,40 @@
+<div class="rowmin"> {{order_total}}
+  {% if orders %}
+  {% for order in orders %}
+    <div class="col-sm-12">
+      <div class="order_block" data-order="{{ order.order_id }}">
+        <div class="rowmin">
+          <div class="data_block clearfix">
+            <div class="rowmin">
+              <div class="order_id">№ Заказа <span>{{ order.order_id }}</span></div>
+              <div class="order_data">Дата: <span>{{ order.date_added }}</span></div>
+            </div>
+            <div class="rowmin">
+              <div class="num_quantity">
+                <p>Позиций: <span>{{ order.products }}</span></p>
+                <p>Товаров: <span>{{ order.quantity }}</span></p>
+              </div>
+              <div class="total_status">
+                <p>Итого: <span>{{ order.total }}</span></p>
+                <p class="status" data-status-id="{{order.status_id}}">Статус: <span>{{ order.status }}</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="btn_block clearfix">
+            <div class="abtn order_repeat" onclick="order_repeat({{ order.order_id }});"><span>Повторить заказ</span></div>
+            <div class="abtn order_detail" data-toggle="modal" data-target="#order_detail" onclick="order_detail({{ order.order_id }});"><span>Посмотреть детали</span></div>
+            <div class="abtn order_report" onclick="orders_act({{ order.order_id }});"><span>Запросить акты</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<div class="pagination_result">
+  {% if pagination %}
+  <div class="pagination_more"><div class="more_product" onclick="more_orders();">Показать еще</div></div>
+  <div class="pagination_block">{{ pagination }}</div>
+  {% endif %}
+  <div class="result_block">{{ results }}</div>
+</div>

@@ -53,6 +53,10 @@ $(document).ready(function(){
   setTranslit('product_description\\[1\\]\\[name\\]', 'product_seo_url', false);
   // Info Articles
   setTranslit('information_description\\[1\\]\\[title\\]', 'information_seo_url', false);
+  // Info News
+  setTranslit('news_description\\[1\\]\\[title\\]', 'news_seo_url', false);
+  // Info Stocks
+  setTranslit('stocks_description\\[1\\]\\[title\\]', 'stocks_seo_url', false);
   // Categories
   setTranslit('category_description\\[1\\]\\[name\\]', 'category_seo_url', false);
   // Manufacturer

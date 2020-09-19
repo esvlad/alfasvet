@@ -17,10 +17,12 @@ class ControllerAccountLogout extends Controller {
 			unset($this->session->data['voucher']);
 			unset($this->session->data['vouchers']);
 
-			$this->response->redirect($this->url->link('account/logout', '', true));
+			$this->response->redirect($this->url->link('common/home', '', true));//$this->url->link('account/logout', '', true)
 		}
 
-		$this->load->language('account/logout');
+		$this->response->redirect($this->url->link('common/home', '', true));
+
+		/*$this->load->language('account/logout');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
@@ -50,6 +52,6 @@ class ControllerAccountLogout extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
-		$this->response->setOutput($this->load->view('common/success', $data));
+		$this->response->setOutput($this->load->view('common/success', $data));*/
 	}
 }

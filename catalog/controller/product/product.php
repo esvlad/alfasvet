@@ -4,11 +4,13 @@ class ControllerProductProduct extends Controller {
 
 	public function index() {
 		$this->load->language('product/product');
+		$this->document->addStyle('catalog/view/javascript/jquery/swiper/css/swiper.min.css');
+		$this->document->addScript('catalog/view/javascript/jquery/swiper/js/swiper.jquery.js');
 
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
-			'text' => $this->language->get('text_home'),
+			'text' => 'Главная',
 			'href' => $this->url->link('common/home')
 		);
 
@@ -30,12 +32,12 @@ class ControllerProductProduct extends Controller {
 
 				$category_info = $this->model_catalog_category->getCategory($path_id);
 
-				if ($category_info) {
+				/*if ($category_info) {
 					$data['breadcrumbs'][] = array(
 						'text' => $category_info['name'],
 						'href' => $this->url->link('product/category', 'path=' . $path)
 					);
-				}
+				}*/
 			}
 
 			// Set the last category breadcrumb
@@ -241,6 +243,8 @@ class ControllerProductProduct extends Controller {
 			$data['reward'] = $product_info['reward'];
 			$data['points'] = $product_info['points'];
 			$data['description'] = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+			$data['description_return'] = html_entity_decode($product_info['description_return'], ENT_QUOTES, 'UTF-8');
+			$data['hit'] = $this->model_catalog_product->getProductHit($product_id);
 
 			if ($product_info['quantity'] <= 0) {
 				$data['stock'] = $product_info['stock_status'];
@@ -253,13 +257,13 @@ class ControllerProductProduct extends Controller {
 			$this->load->model('tool/image');
 
 			if ($product_info['image']) {
-				$data['popup'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height'));
+				$data['popup'] = $this->model_tool_image->resize($product_info['image'], 768, 520);
 			} else {
 				$data['popup'] = '';
 			}
 
 			if ($product_info['image']) {
-				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_thumb_height'));
+				$data['thumb'] = $this->model_tool_image->resize($product_info['image'], 768, 520);
 			} else {
 				$data['thumb'] = '';
 			}
@@ -270,8 +274,8 @@ class ControllerProductProduct extends Controller {
 
 			foreach ($results as $result) {
 				$data['images'][] = array(
-					'popup' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_popup_height')),
-					'thumb' => $this->model_tool_image->resize($result['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_additional_height'))
+					'popup' => $this->model_tool_image->resize($result['image'], 768, 520),
+					'thumb' => $this->model_tool_image->resize($result['image'], 200, 140)
 				);
 			}
 
@@ -321,7 +325,7 @@ class ControllerProductProduct extends Controller {
 							'product_option_value_id' => $option_value['product_option_value_id'],
 							'option_value_id'         => $option_value['option_value_id'],
 							'name'                    => $option_value['name'],
-							'image'                   => $this->model_tool_image->resize($option_value['image'], 50, 50),
+							'image'                   => $this->model_tool_image->resize($option_value['image'], 768, 520),
 							'price'                   => $price,
 							'price_prefix'            => $option_value['price_prefix']
 						);
@@ -331,6 +335,7 @@ class ControllerProductProduct extends Controller {
 				$data['options'][] = array(
 					'product_option_id'    => $option['product_option_id'],
 					'product_option_value' => $product_option_value_data,
+					'option_count'		   => count((array)$option['product_option_value']),
 					'option_id'            => $option['option_id'],
 					'name'                 => $option['name'],
 					'type'                 => $option['type'],
@@ -355,8 +360,10 @@ class ControllerProductProduct extends Controller {
 
 			if ($this->customer->isLogged()) {
 				$data['customer_name'] = $this->customer->getFirstName() . '&nbsp;' . $this->customer->getLastName();
+				$data['customer'] = 1;
 			} else {
 				$data['customer_name'] = '';
+				$data['customer'] = 0;
 			}
 
 			$data['reviews'] = sprintf($this->language->get('text_reviews'), (int)$product_info['reviews']);
@@ -375,7 +382,16 @@ class ControllerProductProduct extends Controller {
 
 			$data['products'] = array();
 
-			$results = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
+			$results_related = $this->model_catalog_product->getProductRelated($this->request->get['product_id']);
+
+			$results_related_id = [];
+			foreach($results_related as $key => $related){
+				$results_related_id[] = $key;
+			}
+
+			$results_category = $this->model_catalog_product->getProductRelatedCategories($this->request->get['product_id'], $results_related_id);
+
+			$results = $results_related + $results_category;
 
 			foreach ($results as $result) {
 				if ($result['image']) {
@@ -416,6 +432,8 @@ class ControllerProductProduct extends Controller {
 					'price'       => $price,
 					'special'     => $special,
 					'tax'         => $tax,
+					'hit'		  => $this->model_catalog_product->getProductHit($result['product_id']),
+					'attributes'  => $this->model_catalog_product->getCardAttributes($result['product_id']),
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $rating,
 					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'])
@@ -435,9 +453,32 @@ class ControllerProductProduct extends Controller {
 				}
 			}
 
+			$mb_detected = new MobileDetect;
+			if($mb_detected->isMobile() && !$mb_detected->isTablet()){
+				$data['slides'] = 1;
+				$data['mobile'] = 1;
+			} elseif($mb_detected->isMobile() && $mb_detected->isTablet()){
+				$data['slides'] = 3;
+			} else {
+				$data['slides'] = 4;
+			}
+
 			$data['recurrings'] = $this->model_catalog_product->getProfiles($this->request->get['product_id']);
 
 			$this->model_catalog_product->updateViewed($this->request->get['product_id']);
+
+			$data['downloads'] = [];
+			$this->load->model('tool/upload');
+			$downloads = $this->model_tool_upload->getProductFiles($this->request->get['product_id']);
+
+			foreach($downloads as $download){
+				$data['downloads'][] = [
+					'download_id' => $download['download_id'],
+					'name' => $download['name'],
+					'mask' => $download['mask'],
+					'link' => $this->url->link('tool/upload/download', 'code=' . $download['filename'])
+				];
+			}
 			
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
@@ -534,6 +575,7 @@ class ControllerProductProduct extends Controller {
 		$data['reviews'] = array();
 
 		$review_total = $this->model_catalog_review->getTotalReviewsByProductId($this->request->get['product_id']);
+		$data['total'] = $review_total;
 
 		$results = $this->model_catalog_review->getReviewsByProductId($this->request->get['product_id'], ($page - 1) * 5, 5);
 
@@ -566,15 +608,15 @@ class ControllerProductProduct extends Controller {
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
 			if ((utf8_strlen($this->request->post['name']) < 3) || (utf8_strlen($this->request->post['name']) > 25)) {
-				$json['error'] = $this->language->get('error_name');
+				$json['error']['name'] = $this->language->get('error_name');
 			}
 
-			if ((utf8_strlen($this->request->post['text']) < 25) || (utf8_strlen($this->request->post['text']) > 1000)) {
-				$json['error'] = $this->language->get('error_text');
+			if ((utf8_strlen($this->request->post['text']) < 4) || (utf8_strlen($this->request->post['text']) > 1000)) {
+				$json['error']['text'] = $this->language->get('error_text');
 			}
 
 			if (empty($this->request->post['rating']) || $this->request->post['rating'] < 0 || $this->request->post['rating'] > 5) {
-				$json['error'] = $this->language->get('error_rating');
+				$json['error']['rating'] = $this->language->get('error_rating');
 			}
 
 			// Captcha
@@ -582,7 +624,7 @@ class ControllerProductProduct extends Controller {
 				$captcha = $this->load->controller('extension/captcha/' . $this->config->get('config_captcha') . '/validate');
 
 				if ($captcha) {
-					$json['error'] = $captcha;
+					$json['error']['captcha'] = $captcha;
 				}
 			}
 

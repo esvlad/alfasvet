@@ -125,6 +125,7 @@ class ControllerProductSearch extends Controller {
 
 		if (isset($this->request->get['search'])) {
 			$data['heading_title'] = $this->language->get('heading_title') .  ' - ' . $this->request->get['search'];
+			$data['search_word'] = $this->request->get['search'];
 		} else {
 			$data['heading_title'] = $this->language->get('heading_title');
 		}
@@ -229,6 +230,8 @@ class ControllerProductSearch extends Controller {
 					'price'       => $price,
 					'special'     => $special,
 					'tax'         => $tax,
+					'hit'		  => $this->model_catalog_product->getProductHit($result['product_id']),
+					'attributes'  => $this->model_catalog_product->getCardAttributes($result['product_id']),
 					'minimum'     => $result['minimum'] > 0 ? $result['minimum'] : 1,
 					'rating'      => $result['rating'],
 					'href'        => $this->url->link('product/product', 'product_id=' . $result['product_id'] . $url)
@@ -453,5 +456,68 @@ class ControllerProductSearch extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 
 		$this->response->setOutput($this->load->view('product/search', $data));
+	}
+
+	public function keywords(){
+		$data = array();
+
+		$this->load->model('catalog/category');
+		$this->load->model('catalog/product');
+		$this->load->model('tool/image');
+
+		$keyword = strip_tags($this->request->get['keyword']);
+
+		$data['product_category'] = [];
+		$results = $this->model_catalog_category->getSearchKeywords($keyword);
+
+		if(!empty($results)){			
+			foreach($results as $category_id => $products){
+				$category = $this->model_catalog_category->getCategory($category_id);
+				$path = $category_id;
+
+				if($category['parent_id'] != 0){
+					$path = $category['parent_id'] . '_' . $category['category_id'];
+				}
+
+				$data['product_category'][$category_id] = [
+					'category_id' => $category_id,
+					'name' => $category['name'],
+					'link' => $this->url->link('product/category', 'path=' . $path . '%search=' . $keyword),
+					'products' => [],
+				];
+
+				foreach ($products as $product) {
+					if ($product['image']) {
+						$image = $this->model_tool_image->resize($product['image'], 50, 36);
+					} else {
+						$image = $this->model_tool_image->resize('placeholder.png', 50, 36);
+					}
+
+					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+						$price = $this->currency->format($product['price'], $this->session->data['currency']);
+					} else {
+						$price = false;
+					}
+
+					if ((float)$product['special']) {
+						$spec = $this->currency->format($product['special'], $this->session->data['currency']);
+					} else {
+						$spec = false;
+					}
+
+					$data['product_category'][$category_id]['products'][] = [
+						'product_id'  => $product['product_id'],
+						'thumb'       => $image,
+						'name'        => $product['name'],
+						'price'       => $price,
+						'spec'     	  => $spec,
+						'attributes'  => $this->model_catalog_product->getCardAttributes($product['product_id'], 2),
+						'href'        => $this->url->link('product/product', '&product_id=' . $product['product_id'])
+					];
+				}
+			}
+		}
+
+		$this->response->setOutput($this->load->view('product/search_ajax', $data));
 	}
 }

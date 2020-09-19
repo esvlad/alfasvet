@@ -266,12 +266,6 @@ class ControllerCatalogInformation extends Controller {
 			$data['error_description'] = array();
 		}
 
-		if (isset($this->error['meta_title'])) {
-			$data['error_meta_title'] = $this->error['meta_title'];
-		} else {
-			$data['error_meta_title'] = array();
-		}
-
 		if (isset($this->error['keyword'])) {
 			$data['error_keyword'] = $this->error['keyword'];
 		} else {
@@ -419,10 +413,6 @@ class ControllerCatalogInformation extends Controller {
 
 			if (utf8_strlen($value['description']) < 3) {
 				$this->error['description'][$language_id] = $this->language->get('error_description');
-			}
-
-			if ((utf8_strlen($value['meta_title']) < 1) || (utf8_strlen($value['meta_title']) > 255)) {
-				$this->error['meta_title'][$language_id] = $this->language->get('error_meta_title');
 			}
 		}
 

@@ -1,170 +1,832 @@
 {{ header }}
-<div id="product-category" class="container">
+<div id="product-category" class="container" data-category-id="{{ category_id }}">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
+  <h2>{{ heading_title }}</h2>
+  <div class="row">
+    {% if category_id == 59 %}
+        {% set content_style = 'col-xs-12 akcii' %}
     {% else %}
-    {% set class = 'col-sm-12' %}
+        {% set content_style = 'col-md-9 col-sm-12 col-xs-12' %}
     {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h2>{{ heading_title }}</h2>
-      {% if thumb or description %}
-      <div class="row"> {% if thumb %}
-        <div class="col-sm-2"><img src="{{ thumb }}" alt="{{ heading_title }}" title="{{ heading_title }}" class="img-thumbnail" /></div>
-        {% endif %}
-        {% if description %}
-        <div class="col-sm-10">{{ description }}</div>
-        {% endif %}</div>
-      <hr>
-      {% endif %}
-      {% if categories %}
-      <h3>{{ text_refine }}</h3>
-      {% if categories|length <= 5 %}
-      <div class="row">
-        <div class="col-sm-3">
-          <ul>
-            {% for category in categories %}
-            <li><a href="{{ category.href }}">{{ category.name }}</a></li>
-            {% endfor %}
-          </ul>
+    {% if column_left or category_id == 59 %}
+    {{ column_left }}
+    {% else %}
+    <div id="filters" class="col-md-3 col-sm-6 col-xs-12" data-category="{{category_path}}">
+      <div class="filters">
+        <div class="slideups on filters_main_title">
+            <h3>Параметры</h3>
+        </div>
+        <div class="toogle_slideups filters_main_body">
+            <div class="filters_group fprice">
+                <div class="slideups on filters_group_title" data-group-id="fprice">
+                    <h3>Цена</h3>
+                </div>
+                <div class="toogle_slideups filters_group_body" data-group-id="fprice">
+                    <div class="range_block">
+                        <div class="range range_fprice" data-min="0" data-max="5000" data-step="100" data-suffix=" Р"></div>
+                        <div class="row range_values">
+                            <label class="col-sm-6 col-xs-6" for="">
+                                <span>от</span>
+                                <input type="text" name="filters_group[price][to]" value="0 Р">
+                            </label>
+                            <label class="col-sm-6 col-xs-6" for="">
+                                <span>до</span>
+                                <input type="text" name="filters_group[price][from]" value="5 000 Р">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if category_id == 20 or category_id == 26 or category_id == 27 %}
+                {% if filters_category_12 %}
+                <div class="filters_group fform">
+                    <div class="slideups on filters_group_title" data-group-id="fform">
+                        <h3>Форма</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fform">
+                      <div class="row">
+                        {% for filter in filters_category_12 %}
+                            <div class="col-sm-6 col-xs-6">
+                              <div class="inputs"><input id="fform_sq{{loop.index}}" type="radio" name="filters_group[filter][12]" value="{{filter.filter_id}}"><label for="fform_sq{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                            </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="range_block">
+                            <div class="range range_fpower" data-min="2" data-max="400" data-step="1" data-suffix=" Вт"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][21][to]" value="2 Вт">
+                                </label>
+                                <label class="col-sm-6 col-xs-6">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][21][from]" value="400 Вт">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if filters_category_9 %}
+                <div class="filters_group fcolor">
+                    <div class="slideups on filters_group_title" data-group-id="fcolor">
+                        <h3>Цвет корпуса</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fcolor">
+                        <div class="fcolors_block">
+                            {% for filter in filters_category_9 %}
+                                <div class="inputs"><input id="fcolor{{loop.index}}" type="radio" name="filters_group[filter][9]" value="{{filter.filter_id}}" data-option-name="{{filter.filter_name}}"><label for="fcolor{{loop.index}}"><span data-title="{{filter.filter_name}}"></span></label></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Цветовая температура</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="range_block">
+                            <div class="range range_fpower" data-min="2200" data-max="6500" data-step="100" data-suffix=" K"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][31][to]" value="2 200 K">
+                                </label>
+                                <label class="col-sm-6 col-xs-6">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][31][from]" value="6 500 K">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filters_group fdispersion">
+                    <div class="slideups on filters_group_title" data-group-id="fdispersion">
+                        <h3>Угол рассеивания <span class="faq_tooltip" data-title="Угол рассеивания светодиодных ламп (угол обзора или расходимости) – это тот угол, под которым световой поток расходится от самого источника света. Он измеряется в градусах и может иметь значение в диапазоне от 15° до 360°. Если угол обзора узкий, то свет от лампы будет сконцентрирован на небольшом участке помещения, если широкий – поток света будет расходиться в разные стороны."></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdispersion">
+                        <div class="range_block">
+                            <div class="range range_fdispersion" data-min="1" data-max="150" data-step="1" data-suffix="°"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][22][to]" value="1°">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][22][from]" value="150°">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filters_group flightflow">
+                    <div class="slideups on filters_group_title" data-group-id="flightflow">
+                        <h3>Световой поток <span class="faq_tooltip" data-title="Световой поток характеризует мощность видимого излучения по воздействию на человеческое зрение. Измеряется в люменах (лм). Величина не зависит от направления."></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="flightflow">
+                        <div class="range_block">
+                            <div class="range range_flightflow" data-min="350" data-max="1600" data-step="10" data-suffix=" лм"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][23][to]" value="350 лм">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][23][from]" value="1 600 лм">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="filters_group fcri">
+                    <div class="slideups filters_group_title" data-group-id="fcri">
+                        <h3>CRI <span class="faq_tooltip" data-title="Коэффициент цветопередачи — количественная мера способности источника света верно отображать цвета освещаемых объектов в сравнении с идеальным или естественным источником света. CRI принимает значения от 1 до 100 (1 — наихудшая цветопередача, 100 — наилучшая)."></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fcri">
+                        <div class="range_block">
+                            <div class="range range_fcri" data-min="0" data-max="100" data-step="1" data-suffix=" RA"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][24][to]" value="0 RA">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][24][from]" value="100 RA">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if filters_category_10 %}
+                <div class="filters_group fmounting">
+                    <div class="slideups slideups filters_group_title" data-group-id="fmounting">
+                        <h3>Тип монтажа</h3>
+                    </div>
+                    <div class="toogle_slideups toogle_slideups filters_group_body" data-group-id="fmounting">
+                        {% for filter in filters_category_10 %}
+                            <div class="inputs"><input id="fmounting{{loop.index}}" type="checkbox" name="filters_group[filter][10]" value="{{filter.filter_id}}"><label for="fmounting{{loop.index}}">{{filter.filter_name}}</label></div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_11 %}
+                <div class="filters_group fprotect">
+                    <div class="slideups on filters_group_title" data-group-id="fprotect">
+                        <h3>Степень защиты <span class="faq_tooltip" data-title="Степень защиты светильников от пыли и влаги определяется международной системой классификации Ingress Protection, сокращено IP. Минимальный класс защиты - IP20. Светильники класса защиты IP67 / IP68 можно использовать подводного освещения бассейнов и фонтанов. Эти светильники могут монтироваться и эксплуатироваться под водой и исключают любое проникновение влаги внутрь корпуса светильника."></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fprotect">
+                        {% for filter in filters_category_11 %}
+                            <div class="inputs"><input id="fprotect{{loop.index}}" type="checkbox" name="filters_group[filter][11]" value="{{filter.filter_id}}"><label for="fprotect{{loop.index}}">{{filter.filter_name}}</label></div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 69 %}
+                <div class="filters_group fdiameter">
+                    <div class="slideups filters_group_title" data-group-id="fdiameter">
+                        <h3>Диаметр</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdiameter">
+                        <div class="range_block">
+                            <div class="range range_fdiameter" data-min="20" data-max="300" data-step="1" data-suffix=" мм"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][20][to]" value="20 мм">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][20][from]" value="300 мм">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elseif category_id == 70 %}
+                <div class="filters_group fsizw">
+                    <div class="slideups filters_group_title" data-group-id="fsizw">
+                        <h3>Размер</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fsizw">
+                        <div class="range_block">
+                            <div class="range range_fsizw" data-min="50" data-max="205" data-step="1" data-suffix=" мм"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][19][to]" value="50 мм">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][19][from]" value="205 мм">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elseif category_id == 71 %}
+                {% if filters_category_12 %}
+                <div class="filters_group fform">
+                    <div class="slideups on filters_group_title" data-group-id="fform">
+                        <h3>Форма</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fform">
+                        <div class="row">
+                            {% for filter in filters_category_12 %}
+                                <div class="col-sm-6 col-xs-6">
+                                  <div class="inputs"><input id="fform_fform{{loop.index}}" type="radio" name="filters_group[filter][12]" value="{{filter.filter_id}}"><label for="fform_fform{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!--<div class="filters_group fsizw">
+                    <div class="slideups filters_group_title" data-group-id="fsizw">
+                        <h3>Размер</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fsizw">
+                        <div class="range_block">
+                            <div class="range range_fsizw" data-min="55" data-max="215" data-step="1" data-suffix=" мм"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][19][to]" value="55 мм">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][19][from]" value="215 мм">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+                <div class="filters_group fdiameter">
+                    <div class="slideups filters_group_title" data-group-id="fdiameter">
+                        <h3>Диаметр</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdiameter">
+                        <div class="range_block">
+                            <div class="range range_fdiameter" data-min="60" data-max="255" data-step="1" data-suffix=" мм"></div>
+                            <div class="row range_values">
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>от</span>
+                                    <input type="text" name="filters_group[attribute][20][to]" value="60 мм">
+                                </label>
+                                <label class="col-sm-6 col-xs-6" for="">
+                                    <span>до</span>
+                                    <input type="text" name="filters_group[attribute][20][from]" value="255 мм">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elseif category_id == 45 %}
+                {% if filters_category_12 %}
+                <div class="filters_group fform">
+                    <div class="slideups on filters_group_title" data-group-id="fform">
+                        <h3>Форма светильника</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fform">
+                        <div class="row">
+                            {% for filter in filters_category_12 %}
+                                <div class="col-sm-6 col-xs-6">
+                                  <div class="inputs"><input id="fform_fform{{loop.index}}" type="radio" name="filters_group[filter][12]" value="{{filter.filter_id}}"><label for="fform_fform{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_13 %}
+                <div class="filters_group flampcolor">
+                    <div class="slideups on filters_group_title" data-group-id="flampcolor">
+                        <h3>Цвет светильника</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="flampcolor">
+                        <div class="row">
+                            {% for filter in filters_category_13 %}
+                                <div class="col-sm-6 col-xs-6">
+                                  <div class="inputs"><input id="fform_flampcolor{{loop.index}}" type="radio" name="filters_group[filter][13]" value="{{filter.filter_id}}"><label for="fform_flampcolor{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_27 %}
+                <div class="filters_group ffeatures">
+                    <div class="slideups on filters_group_title" data-group-id="ffeatures">
+                        <h3>Особенности</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="ffeatures">
+                        <div class="row">
+                            {% for filter in filters_category_27 %}
+                                <div class="col-sm-6 col-xs-6">
+                                  <div class="inputs"><input id="fform_ffeatures{{loop.index}}" type="radio" name="filters_group[filter][27]" value="{{filter.filter_id}}"><label for="fform_ffeatures{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 66 %}
+                {% if filters_category_15 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_15 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][15]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_16 %}
+                <div class="filters_group fnutrition">
+                    <div class="slideups on filters_group_title" data-group-id="fnutrition">
+                        <h3>Питание</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fnutrition">
+                        <div class="row">
+                            {% for filter in filters_category_16 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fnutrition{{loop.index}}" type="radio" name="filters_group[filter][16]" value="{{filter.filter_id}}"><label for="fform_fnutrition{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 63 %}
+                {% if filters_category_17 %}
+                <div class="filters_group ftemperature">
+                    <div class="slideups on filters_group_title" data-group-id="ftemperature">
+                        <h3>Температура свечения</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="ftemperature">
+                        <div class="row">
+                            {% for filter in filters_category_17 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_ftemperature{{loop.index}}" type="radio" name="filters_group[filter][17]" value="{{filter.filter_id}}"><label for="fform_ftemperature{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_18 %}
+                <div class="filters_group fbacklight">
+                    <div class="slideups on filters_group_title" data-group-id="fbacklight">
+                        <h3>Цвет подсветки</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fbacklight">
+                        <div class="row">
+                            {% for filter in filters_category_18 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fbacklight{{loop.index}}" type="radio" name="filters_group[filter][18]" value="{{filter.filter_id}}"><label for="fform_fbacklight{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!--<div class="filters_group fmode">
+                    <div class="slideups on filters_group_title" data-group-id="fmode">
+                        <h3>Режим включения <span class="faq_tooltip" data-title="При основном режиме включения сначала срабатывает основное освещение светильника, при неосновном - подсветка светильника"></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fmode">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_fmode1" type="radio" name="filters_group[filter][19]" value="63"><label for="fform_fmode1" class="square">основной</label></div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_fmode2" type="radio" name="filters_group[filter][19]" value="64"><label for="fform_fmode2" class="square">неосновной</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            {% elseif category_id == 62 %}
+                {% if filters_category_12 %}
+                <div class="filters_group fform">
+                    <div class="slideups on filters_group_title" data-group-id="fform">
+                        <h3>Форма</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fform">
+                        <div class="row">
+                            {% for filter in filters_category_12 %}
+                                <div class="col-sm-6 col-xs-6">
+                                  <div class="inputs"><input id="fform_fform{{loop.index}}" type="radio" name="filters_group[filter][12]" value="{{filter.filter_id}}"><label for="fform_fform{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_20 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность <span class="faq_tooltip" data-title="Первое значение - мощность основного освещения, второе - мощность подсветки"></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_20 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][20]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_17 %}
+                <div class="filters_group ftemperature">
+                    <div class="slideups on filters_group_title" data-group-id="ftemperature">
+                        <h3>Температура свечения</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="ftemperature">
+                        <div class="row">
+                            {% for filter in filters_category_17 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_ftemperature{{loop.index}}" type="radio" name="filters_group[filter][17]" value="{{filter.filter_id}}"><label for="fform_ftemperature{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_18 %}
+                <div class="filters_group fbacklight">
+                    <div class="slideups on filters_group_title" data-group-id="fbacklight">
+                        <h3>Цвет подсветки</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fbacklight">
+                        <div class="row">
+                            {% for filter in filters_category_18 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fbacklight{{loop.index}}" type="radio" name="filters_group[filter][18]" value="{{filter.filter_id}}"><label for="fform_fbacklight{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!--<div class="filters_group fmode">
+                    <div class="slideups on filters_group_title" data-group-id="fmode">
+                        <h3>Режим включения <span class="faq_tooltip" data-title="При основном режиме включения сначала срабатывает основное освещение светильника, при неосновном - подсветка светильника"></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fmode">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_fmode1" type="radio" name="filters_group[filter][19]" value="63"><label for="fform_fmode1" class="square">основной</label></div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_fmode2" type="radio" name="filters_group[filter][19]" value="64"><label for="fform_fmode2" class="square">неосновной</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+            {% elseif category_id == 24 %}
+                {% if filters_category_20 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность <span class="faq_tooltip" data-title="Первое значение - мощность основного освещения, второе - мощность подсветки"></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_20 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][20]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_17 %}
+                <div class="filters_group ftemperature">
+                    <div class="slideups on filters_group_title" data-group-id="ftemperature">
+                        <h3>Температура свечения</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="ftemperature">
+                        <div class="row">
+                            {% for filter in filters_category_17 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_ftemperature{{loop.index}}" type="radio" name="filters_group[filter][17]" value="{{filter.filter_id}}"><label for="fform_ftemperature{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_18 %}
+                <div class="filters_group fbacklight">
+                    <div class="slideups on filters_group_title" data-group-id="fbacklight">
+                        <h3>Цвет подсветки</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fbacklight">
+                        <div class="row">
+                            {% for filter in filters_category_18 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fbacklight{{loop.index}}" type="radio" name="filters_group[filter][18]" value="{{filter.filter_id}}"><label for="fform_fbacklight{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_19 %}
+                <div class="filters_group fmode">
+                    <div class="slideups on filters_group_title" data-group-id="fmode">
+                        <h3>Режим включения <span class="faq_tooltip" data-title="При основном режиме включения сначала срабатывает основное освещение светильника, при неосновном - подсветка светильника"></span></h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fmode">
+                        <div class="row">
+                            {% for filter in filters_category_19 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fmode{{loop.index}}" type="radio" name="filters_group[filter][19]" value="{{filter.filter_id}}"><label for="fform_fmode{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 72 %}
+                <div class="filters_group fdiameter">
+                    <div class="slideups filters_group_title" data-group-id="fdiameter">
+                        <h3>Диаметр</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdiameter">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_square" type="radio" name="filters_group[filter][21]" value="68"><label for="fform_square" class="square">22 мм</label></div>
+                            </div>
+                            <div class="col-xs-12">
+                                <div class="inputs"><input id="fform_square" type="radio" name="filters_group[filter][21]" value="69"><label for="fform_square" class="square">32 мм</label></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% elseif category_id == 65 %}
+                {% if filters_category_22 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_22 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][22]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 64 %}
+                {% if filters_category_9 %}
+                <div class="filters_group fcolor">
+                    <div class="slideups on filters_group_title" data-group-id="fcolor">
+                        <h3>Цвет корпуса</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fcolor">
+                        <div class="fcolors_block">
+                            {% for filter in filters_category_9 %}
+                                <div class="inputs"><input id="fcolor{{loop.index}}" type="radio" name="filters_group[filter][9]" value="{{filter.filter_id}}" data-option-name="{{filter.filter_name}}"><label for="fcolor{{loop.index}}"><span data-title="{{filter.filter_name}}"></span></label></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 57 %}
+                {% if filters_category_22 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_22 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][22]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_9 %}
+                <div class="filters_group fcolor">
+                    <div class="slideups on filters_group_title" data-group-id="fcolor">
+                        <h3>Цвет корпуса</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fcolor">
+                        <div class="fcolors_block">
+                            {% for filter in filters_category_9 %}
+                                <div class="inputs"><input id="fcolor{{loop.index}}" type="radio" name="filters_group[filter][9]" value="{{filter.filter_id}}" data-option-name="{{filter.filter_name}}"><label for="fcolor{{loop.index}}"><span data-title="{{filter.filter_name}}"></span></label></div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 17 %}
+                {% if filters_category_23 %}
+                <div class="filters_group fpower">
+                    <div class="slideups on filters_group_title" data-group-id="fpower">
+                        <h3>Мощность</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fpower">
+                        <div class="row">
+                            {% for filter in filters_category_23 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fpower{{loop.index}}" type="radio" name="filters_group[filter][23]" value="{{filter.filter_id}}"><label for="fform_fpower{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_16 %}
+                <div class="filters_group fnutrition">
+                    <div class="slideups on filters_group_title" data-group-id="fnutrition">
+                        <h3>Питание</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fnutrition">
+                        <div class="row">
+                            {% for filter in filters_category_16 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fnutrition{{loop.index}}" type="radio" name="filters_group[filter][16]" value="{{filter.filter_id}}"><label for="fform_fnutrition{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_17 %}
+                <div class="filters_group ftemperature">
+                    <div class="slideups on filters_group_title" data-group-id="ftemperature">
+                        <h3>Температура свечения</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="ftemperature">
+                        <div class="row">
+                            {% for filter in filters_category_17 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_ftemperature{{loop.index}}" type="radio" name="filters_group[filter][17]" value="{{filter.filter_id}}"><label for="fform_ftemperature{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_24 %}
+                <div class="filters_group fdiodes">
+                    <div class="slideups on filters_group_title" data-group-id="fdiodes">
+                        <h3>Диодов на метр</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdiodes">
+                        <div class="row">
+                            {% for filter in filters_category_24 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fdiodes{{loop.index}}" type="radio" name="filters_group[filter][24]" value="{{filter.filter_id}}"><label for="fform_fdiodes{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if filters_category_25 %}
+                <div class="filters_group fdiodesize">
+                    <div class="slideups on filters_group_title" data-group-id="fdiodesize">
+                        <h3>Размер диода</h3>
+                    </div>
+                    <div class="toogle_slideups filters_group_body" data-group-id="fdiodesize">
+                        <div class="row">
+                            {% for filter in filters_category_25 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fdiodesize{{loop.index}}" type="radio" name="filters_group[filter][25]" value="{{filter.filter_id}}"><label for="fform_fdiodesize{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% elseif category_id == 46 %}
+                {% if filters_category_26 %}
+                <div class="filters_group fcompl">
+                    <div class="toogle_slideups filters_group_body" data-group-id="fcompl">
+                        <div class="row">
+                            {% for filter in filters_category_26 %}
+                                <div class="col-xs-12">
+                                    <div class="inputs"><input id="fform_fcompl{{loop.index}}" type="checkbox" name="filters_group[filter][26]" value="{{filter.filter_id}}"><label for="fform_fcompl{{loop.index}}" class="square">{{filter.filter_name}}</label></div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
         </div>
       </div>
-      {% else %}
-      <div class="row">{% for category in categories|batch((categories|length / 4)|round(1, 'ceil')) %}
-        <div class="col-sm-3">
-          <ul>
-            {% for child in category %}
-            <li><a href="{{ child.href }}">{{ child.name }}</a></li>
-            {% endfor %}
-          </ul>
+    </div>
+    {% endif %}
+    <div id="content" class="{{content_style}} products">
+      {% if category_id != 59 %}
+      <div class="row min">
+        <div class="col-sm-12 sort">
+          <span class="caption">Сортировка:</span>
+          <a class="price" href="{{alink_price}}" data-type="{{ order_price }}" target="_self">По цене</a>
+          <a class="populars" href="{{alink_rating}}" data-type="{{ order_rating }}" target="_self">По популярности</a>
+          <span class="instock"><div class="inputs"><input id="instock" type="checkbox" name="filters_group[instock]" value="1"><label for="instock">Только в наличии</label></div></span>
+          <input type="hidden" name="sort" value="{{ get_sort }}">
+          <input type="hidden" name="order" value="{{ get_order }}">
         </div>
-        {% endfor %}</div>
-      <br />
-      {% endif %}
+        <div class="col-xs-12 sort_mobile">
+          <h3>Сортировка</h3>
+          <div class="sort_mobile_block"></div>
+        </div>
+      </div>
       {% endif %}
       {% if products %}
-      <div class="row">
-        <div class="col-md-2 col-sm-6 hidden-xs">
-          <div class="btn-group btn-group-sm">
-            <button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_list }}"><i class="fa fa-th-list"></i></button>
-            <button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip" title="{{ button_grid }}"><i class="fa fa-th"></i></button>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6">
-          <div class="form-group"><a href="{{ compare }}" id="compare-total" class="btn btn-link">{{ text_compare }}</a></div>
-        </div>
-        <div class="col-md-4 col-xs-6">
-          <div class="form-group input-group input-group-sm">
-            <label class="input-group-addon" for="input-sort">{{ text_sort }}</label>
-            <select id="input-sort" class="form-control" onchange="location = this.value;">
-              
-              
-              
-              {% for sorts in sorts %}
-              {% if sorts.value == '%s-%s'|format(sort, order) %}
-              
-              
-              
-              <option value="{{ sorts.href }}" selected="selected">{{ sorts.text }}</option>
-              
-              
-              
-              {% else %}
-              
-              
-              
-              <option value="{{ sorts.href }}">{{ sorts.text }}</option>
-              
-              
-              
-              {% endif %}
-              {% endfor %}
-            
-            
-            
-            </select>
-          </div>
-        </div>
-        <div class="col-md-3 col-xs-6">
-          <div class="form-group input-group input-group-sm">
-            <label class="input-group-addon" for="input-limit">{{ text_limit }}</label>
-            <select id="input-limit" class="form-control" onchange="location = this.value;">
-              
-              
-              
-              {% for limits in limits %}
-              {% if limits.value == limit %}
-              
-              
-              
-              <option value="{{ limits.href }}" selected="selected">{{ limits.text }}</option>
-              
-              
-              
-              {% else %}
-              
-              
-              
-              <option value="{{ limits.href }}">{{ limits.text }}</option>
-              
-              
-              
-              {% endif %}
-              {% endfor %}
-            
-            
-            
-            </select>
-          </div>
-        </div>
-      </div>
-      <div class="row"> {% for product in products %}
-        <div class="product-layout product-list col-xs-12">
-          <div class="product-thumb">
+      <div class="product_list clearfix"> 
+        {% for product in products %}
+        <div class="product-layout product_list_item" data-id="{{ product.product_id }}">
+          {% if product.special %}
+          <span class="stock">Акция</span>
+          {% endif %}
+          {% if product.hit %}
+          <span class="hit">Хит</span>
+          {% endif %}
+          <div class="product-thumb transition product_list_item_padding">
             <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-            <div>
-              <div class="caption">
-                <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-                <p>{{ product.description }}</p>
-                {% if product.price %}
-                <p class="price"> {% if not product.special %}
-                  {{ product.price }}
-                  {% else %} <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span> {% endif %}
-                  {% if product.tax %} <span class="price-tax">{{ text_tax }} {{ product.tax }}</span> {% endif %} </p>
+            <div class="caption">
+              <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+              <div class="caption_parameters">
+                {% if product.attributes %}
+                {% for attribute in product.attributes %}
+                <span class="attribute" data-attributes="{{attribute.attribute_id}}">{{attribute.text}}</span>
+                {% endfor %}
                 {% endif %}
-                {% if product.rating %}
-                <div class="rating"> {% for i in 1..5 %}
-                  {% if product.rating < i %} <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span> {% else %} <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>{% endif %}
-                  {% endfor %} </div>
-                {% endif %} </div>
-              <div class="button-group">
-                <button type="button" onclick="cart.add('{{ product.product_id }}', '{{ product.minimum }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-                <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
-                <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button>
+              </div>
+              <div class="instock_wishlist">
+                <div class="instock_block"><span class="instock">В наличии</span></div>
+                <div class="wishlist_block"><span class="wishlist" onclick="wishlist.add('{{ product.product_id }}');">В избранное</span></div>
+              </div>
+              <div class="row price_cart">
+                <div class="col-xs-6">
+                  {% if product.price %}
+                  <p class="price">
+                    {% if not product.special %}
+                    <span class="price-new">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                    {% else %}
+                    <span class="price-old">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.3 35.74"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M18.29,25.05v3.69H8.2v7H3.34v-7H.05V25.05H3.34V20.34H0V16.65H3.34V0H13.4a22,22,0,0,1,5.36.6,11.49,11.49,0,0,1,4.06,1.85A8.25,8.25,0,0,1,25.4,5.58,10.18,10.18,0,0,1,26.3,10a10.72,10.72,0,0,1-.76,4.07,8.5,8.5,0,0,1-2.39,3.28A11.71,11.71,0,0,1,19,19.55a20.34,20.34,0,0,1-6.06.79H8.2v4.71Zm3-15q0-3.44-2-4.91T13.18,3.69h-5v13h4.54a18.33,18.33,0,0,0,3.57-.31A7.16,7.16,0,0,0,19,15.27a4.83,4.83,0,0,0,1.68-2A7.64,7.64,0,0,0,21.25,10.06Z"/></g></g></svg></span>
+                    <span class="price-new">{{ product.special }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                    {% endif %}
+                    {% if product.tax %}
+                    <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
+                    {% endif %}
+                  </p>
+                  {% endif %}
+                </div>
+                <div class="col-xs-6">
+                    <div class="in_cart" onclick="cart.add('{{ product.product_id }}');"><span>В корзину</span></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        {% endfor %} </div>
-      <div class="row">
-        <div class="col-sm-6 text-left">{{ pagination }}</div>
-        <div class="col-sm-6 text-right">{{ results }}</div>
+        {% endfor %}
+      </div>
+      {% if category_id != 59 %}
+      <div class="pagination_result">
+        {% if pagination %}
+        <div class="pagination_more"><div class="more_product" onclick="more_product();">Показать еще</div></div>
+        <div class="pagination_block">{{ pagination }}</div>
+        {% endif %}
+        <div class="result_block">{{ results }}</div>
       </div>
       {% endif %}
-      {% if not categories and not products %}
-      <p>{{ text_empty }}</p>
-      <div class="buttons">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
-      </div>
       {% endif %}
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+    </div>
+  </div>
 </div>
 {{ footer }} 

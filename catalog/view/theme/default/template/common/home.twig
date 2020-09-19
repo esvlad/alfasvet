@@ -1,14 +1,210 @@
 {{ header }}
-<div id="common-home" class="container">
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}{{ content_bottom }}</div>
-    {{ column_right }}</div>
+<div class="main_banners">
+    <div class="swiper-viewport">
+      <div id="banner_main" class="swiper-container">
+        <div class="swiper-wrapper">
+          {% for banner in banners %}
+          <div class="swiper-slide" data-id="{{ banner.id }}">
+            <img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" />
+            <div class="banners_text">
+              <div class="title" data-color="{{ banner.colors.title_color_id }}">{{ banner.title }}</div>
+              {% if banner.caption %}
+              <div class="caption" data-color="{{ banner.colors.caption_color_id }}">{{ banner.caption }}</div>
+              {% endif %}
+              {% if banner.link %}
+              <div class="link" data-color="{{ banner.colors.btn_caption_color_id }}"><a class="abtn" href="{{ banner.link }}">{{ banner.btn_caption }}</a></div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="swiper-pagination banner_pagination"></div>
+      </div>
+    </div>
 </div>
+<script type="text/javascript">
+$('#banner_main').swiper({
+  effect: 'fade',
+  speed: 600,
+  longSwipesMs: 150,
+  pagination: '.banner_pagination',
+  paginationClickable: true,
+  autoplay: 4500,
+  loop: true
+});
+</script>
+<div class="container home_category">
+  <div class="rowmin">
+      <div class="home_category_item _vert home_category_item1">
+        <div class="home_category_item_block">
+          <img class="top" src="catalog/view/theme/default/image/home/home1.png" alt="">
+          <ul class="list-unstyled color_black">
+            <li><a href="../potolochnye/vstraivaemye">Потолочные</a></li>
+            <li><a href="../potolochnye/vstraivaemye">Встраиваемые</a></li>
+            <li><a href="../potolochnye/nakladnye">Накладные</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="home_category_item _vert home_category_item2">
+        <div class="home_category_item_block">
+          <ul class="list-unstyled color_white">
+            <li><a href="../trekovye-sistemy/komplektujushhie-dlja-treka">Трековые системы</a></li>
+            <li><a href="../trekovye-sistemy/komplektujushhie-dlja-treka">Комплектующие для трека</a></li>
+            <li><a href="../trekovye-sistemy/trekovye-svetilniki">Трековые светильники</a></li>
+          </ul>
+          <img class="bottom" src="catalog/view/theme/default/image/home/home2.png" alt="">
+        </div>
+      </div>
+      <div class="home_category_item _hor home_category_item3">
+        <div class="home_category_item_block">
+          <img class="left" src="catalog/view/theme/default/image/home/home3.png" alt="">
+          <ul class="list-unstyled color_white">
+            <li><a href="../dekorativnoe-osveshhenie/s-podsvetkoj">Декоративное освещение</a></li>
+            <li><a href="../dekorativnoe-osveshhenie/s-podsvetkoj">C подсветкой</a></li>
+            <li><a href="../dekorativnoe-osveshhenie/s-ornamentom">С орнаментом</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="home_category_item _hor home_category_item4">
+        <div class="home_category_item_block">
+          <ul class="list-unstyled color_black">
+            <li><a href="../svetilniki-gx53/svetilniki">Светильники GX53</a></li>
+            <li><a href="../svetilniki-gx53/svetilniki">Светильники</a></li>
+            <li><a href="../svetilniki-gx53/lampy">Лампы</a></li>
+          </ul>
+          <img class="right" src="catalog/view/theme/default/image/home/home4.png" alt="">
+        </div>
+      </div>
+      <div class="home_category_item _vert home_category_item5">
+        <div class="home_category_item_block">
+          <img class="top" src="catalog/view/theme/default/image/home/home5.png" alt="">
+          <ul class="list-unstyled color_white">
+            <li><a href="../svetodiodnaja-lenta">Светодиодная лента</a></li>
+            <li><a href="../svetodiodnaja-lenta/bloki-pitaniya">Блоки питания</a></li>
+            <li><a href="../svetodiodnaja-lenta/kontrollery">Контроллеры</a></li>
+            <li><a href="../svetodiodnaja-lenta/usiliteli">Усилители</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="home_category_item _vert home_category_item6">
+        <div class="home_category_item_block">
+          <ul class="list-unstyled color_black">
+            <li><a href="../komplektujushhie/termokolca">Комплектующие</a></li>
+            <li><a href="../komplektujushhie/termokolca">Термокольца</a></li>
+            <li><a href="../komplektujushhie/termokvadraty">Термоквадраты</a></li>
+            <li><a href="../komplektujushhie/universalnye-platformy">Универсальные платформы</a></li>
+            <li><a href="../komplektujushhie/obvod-dlya-trub">Обвод для трубы</a></li>
+            <li><a href="../komplektujushhie/klemmy">Клеммы</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="home_category_item _vert home_category_item7">
+        <div class="home_category_item_block">
+          <ul class="list-unstyled color_white">
+            <li><a href="../faq">Как подобрать светильник?</a></li>
+            <li><a href="../calculator">Информация по подбору светильника</a></li>
+          </ul>
+        </div>
+      </div>
+  </div>
+</div>
+<div id="common-home-top" class="container">
+  <div class="rowmin">
+    <div id="content" class="{{ class }}">{{ content_top }}</div>
+  </div>
+</div>
+<div class="container articles_main">
+  <div class="rowmin articles_main_list articles_main_list-big">
+    <div class="col-sm-6 col-xs-12 articles_main_item">
+      <div class="articles_item_block">
+        <h2>О продукции</h2>
+        <p>Преимущества, характеристики <br />и&nbsp;используемые материалы.</p>
+        <img src="catalog/view/theme/default/image/oprod.svg">
+        <a class="abtn articles_view_btn" href="{{products}}">О продукции</a>
+      </div>
+      <img src="catalog/view/theme/default/image/kniga.png">
+    </div>
+    <div class="col-sm-6 col-xs-12 articles_main_item">
+      <div class="articles_item_block">
+        <h2>Дилерам</h2>
+        <p>Условия сотрудничества, оптовые <br />прайсы и&nbsp;помощь в&nbsp;продажах.</p>
+        <img src="catalog/view/theme/default/image/optovikam.svg">
+        <a class="abtn articles_view_btn" href="{{optovikam}}">Информация для дилеров</a>
+      </div>
+      <img src="catalog/view/theme/default/image/chel.png">
+    </div>
+  </div>
+  <div class="rowmin articles_main_list articles_main_list-small">
+    <div class="col-md-4 col-sm-6 col-xs-12 articles_main_item">
+      <div class="articles_item_block">
+        <h2>О компании</h2>
+        <p>Наши принципы и ценности. <br />История развития и&nbsp;главные лица компании.</p>
+        <img src="catalog/view/theme/default/image/company.svg">
+        <a class="abtn articles_view_btn" href="{{about_us}}">О компании</a>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12 articles_main_item">
+      <div class="articles_item_block">
+        <h2>Доставка</h2>
+        <p>География распространения компании. <br />Условия и&nbsp;способы доставки.</p>
+        <img src="catalog/view/theme/default/image/dostavka.svg">
+        <a class="abtn articles_view_btn" href="{{delivery}}">О доставке</a>
+      </div>
+    </div>
+    <div class="col-md-4 col-sm-6 col-xs-12 articles_main_item">
+      <div class="articles_item_block">
+        <h2>Оплата</h2>
+        <p>Доступные способы и условия оплаты.</p>
+        <img src="catalog/view/theme/default/image/oplata.svg">
+        <a class="abtn articles_view_btn" href="{{payment}}">Об оплате</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container news_main">
+  <h2>Новости</h2>
+  <div class="news_main_list swiper-container">
+   <div class="swiper-wrapper">
+    {% for news in newses %}
+    <div class="swiper-slide news_block" data-news="{{news.id}}">
+      <div class="image"><a href="{{news.view}}"><img src="{{news.image}}" alt=""></a></div>
+      <div class="caption">
+        <h3><a href="{{news.view}}">{{news.title}}</a></h3>
+        <p>{{news.description}}</p>
+      </div>
+    </div>
+    {% endfor %}
+   </div>
+  </div>
+  <div class="arrows_more">
+    <div class="arrows">
+      <span class="arrows_left news_swiper_left"></span>
+      <span class="arrows_right news_swiper_right"></span>
+    </div>
+    <a href="../news" class="abtn more_news_btn">Все новости</a>
+  </div>
+</div>
+<div id="common-home-bottom" class="container">
+  <div class="rowmin">
+    <div id="content" class="{{ class }}">{{ content_bottom }}</div>
+  </div>
+</div>
+<script type="text/javascript">
+$('.news_main_list').swiper({
+  mode: 'horizontal',
+  slidesPerView: 3,
+  spaceBetween: 20,
+  paginationClickable: true,
+  nextButton: '.news_swiper_right',
+  prevButton: '.news_swiper_left',
+  breakpoints: {
+    640: {
+        slidesPerView: 1
+    },
+    800: {
+        slidesPerView: 2
+    }
+  }
+});
+</script>
 {{ footer }}

@@ -41,7 +41,15 @@ class ControllerStartupSeoUrl extends Controller {
 						$this->request->get['information_id'] = $url[1];
 					}
 
-					if ($query->row['query'] && $url[0] != 'information_id' && $url[0] != 'manufacturer_id' && $url[0] != 'category_id' && $url[0] != 'product_id') {
+					if ($url[0] == 'news_id') {
+						$this->request->get['news_id'] = $url[1];
+					}
+
+					if ($url[0] == 'stocks_id') {
+						$this->request->get['stocks_id'] = $url[1];
+					}
+
+					if ($query->row['query'] && $url[0] != 'information_id' && $url[0] != 'news_id' && $url[0] != 'stocks_id' && $url[0] != 'manufacturer_id' && $url[0] != 'category_id' && $url[0] != 'product_id') {
 						$this->request->get['route'] = $query->row['query'];
 					}
 				} else {
@@ -60,6 +68,10 @@ class ControllerStartupSeoUrl extends Controller {
 					$this->request->get['route'] = 'product/manufacturer/info';
 				} elseif (isset($this->request->get['information_id'])) {
 					$this->request->get['route'] = 'information/information';
+				} elseif (isset($this->request->get['news_id'])) {
+					$this->request->get['route'] = 'information/news/news';
+				} elseif (isset($this->request->get['stocks_id'])) {
+					$this->request->get['route'] = 'information/stocks/stocks';
 				}
 			}
 		// Redirect 301   
@@ -89,6 +101,10 @@ class ControllerStartupSeoUrl extends Controller {
 				if (isset($this->request->get['page'])) $arg = $arg . '?page=' . (int)$this->request->get['page'];
 			} elseif ($this->request->get['route'] == 'information/information' && isset($this->request->get['information_id'])) {
 				$route = 'information_id=' . (int)$this->request->get['information_id'];
+			} elseif ($this->request->get['route'] == 'information/news/news' && isset($this->request->get['news_id'])) {
+				$route = 'news_id=' . (int)$this->request->get['news_id'];
+			} elseif ($this->request->get['route'] == 'information/stocks/stocks' && isset($this->request->get['stocks_id'])) {
+				$route = 'stocks_id=' . (int)$this->request->get['stocks_id'];
 			} elseif (sizeof($this->request->get) > 1) {
 				$args = '?' . str_replace("route=" . $this->request->get['route'].'&amp;', "", $this->request->server['QUERY_STRING']);
 				$arg = str_replace('&amp;', '&', $args);
@@ -117,7 +133,7 @@ class ControllerStartupSeoUrl extends Controller {
 
 		foreach ($data as $key => $value) {
 			if (isset($data['route'])) {
-				if (($data['route'] == 'product/product' && $key == 'product_id') || (($data['route'] == 'product/manufacturer/info' || $data['route'] == 'product/product') && $key == 'manufacturer_id') || ($data['route'] == 'information/information' && $key == 'information_id')) {
+				if (($data['route'] == 'product/product' && $key == 'product_id') || (($data['route'] == 'product/manufacturer/info' || $data['route'] == 'product/product') && $key == 'manufacturer_id') || ($data['route'] == 'information/information' && $key == 'information_id') || ($data['route'] == 'information/news/news' && $key == 'news_id') || ($data['route'] == 'information/stocks/stocks' && $key == 'stocks_id')) {
 					$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "seo_url WHERE `query` = '" . $this->db->escape($key . '=' . (int)$value) . "' AND store_id = '" . (int)$this->config->get('config_store_id') . "' AND language_id = '" . (int)$this->config->get('config_language_id') . "'");
 
 					if ($query->num_rows && $query->row['keyword']) {

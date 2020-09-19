@@ -6,6 +6,7 @@ define('HTTP_SERVER', 'http://alfasvet/');
 define('HTTPS_SERVER', 'http://alfasvet/');
 
 // DIR
+define('DIR_R', 'S:/domains/alfasvet/');
 define('DIR_APPLICATION', 'S:/domains/alfasvet/catalog/');
 define('DIR_SYSTEM', 'S:/domains/alfasvet/system/');
 define('DIR_IMAGE', 'S:/domains/alfasvet/image/');

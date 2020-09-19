@@ -103,4 +103,60 @@ class ControllerAccountReset extends Controller {
 
 		return !$this->error;
 	}
+
+	public function reset(){
+		$json = [];
+
+		if(!empty($this->request->post['email'])){
+			$email = $this->request->post['email'];
+
+			if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+				$json['error_text'] = 'Не корректно введен e-mail';
+			}
+
+			$this->load->model('account/customer');
+
+			$customer_info = $this->model_account_customer->getCustomerByEmail($email);
+
+			if($customer_info){
+				//Generate password
+				$chars = "qazxswedcvfrtgbnhyujmkiolp1234567890QAZXSWEDCVFRTGBNHYUJMKIOLP";
+				$max = 8;
+				$size = strlen($chars) - 1;
+				$password = null;
+				while($max--){
+					$password .= $chars[rand(0,$size)];
+				}
+
+				$this->model_account_customer->editPassword($email, $password);
+
+				$data = [];
+
+				$data['store_url'] = $this->config->get('config_url');
+				$data['store_name'] = $this->config->get('config_name');
+				$data['password'] = $password;
+
+				$subject = sprintf('%s - Новый пароль к вашему аккаунту', html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+
+				$mail = new Mail();
+
+				$mail->setTo('sale@ledoptom.com');//$this->config->get('config_email') . ', swd-w11@yandex.ru' sale@ledoptom.com
+				$mail->setFrom($this->config->get('config_email'));
+				$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+				$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
+				$mail->setHtml($this->load->view('mail/reset_password', $data));
+				//$mail->setText($text);
+				$mail->send();
+
+				$json['success'] = true;
+			} else {
+				$json['error_text'] = 'Пользователя с таким e-mail не существует';
+			}
+		} else {
+			$json['error_text'] = 'Не введен e-mail';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }

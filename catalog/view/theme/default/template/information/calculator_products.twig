@@ -1,0 +1,55 @@
+{% if products %}
+<h3>Вы можете выбрать следующие светильники:</h3>
+<div class="product_list"> 
+    {% for product in products %}
+    <div class="product-layout product_list_item">
+      {% if product.special %}
+      <span class="stock">Акция</span>
+      {% endif %}
+      {% if product.hit %}
+      <span class="hit">Хит</span>
+      {% endif %}
+      <div class="product-thumb transition product_list_item_padding">
+        <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
+        <div class="caption">
+          <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+          <div class="caption_parameters">
+            {% if product.attributes %}
+            {% for attribute in product.attributes %}
+            <span class="attribute" data-attributes="{{attribute.attribute_id}}">{{attribute.text}}</span>
+            {% endfor %}
+            {% endif %}
+          </div>
+          <div class="instock_wishlist">
+            <div class="instock_block"><span class="instock">В наличии</span></div>
+            <div class="wishlist_block"><span class="wishlist" onclick="wishlist.add('{{ product.product_id }}');">В избранное</span></div>
+          </div>
+          <div class="row price_cart">
+            <div class="col-sm-6 col-xs-6">
+              {% if product.price %}
+              <p class="price">
+                {% if not product.special %}
+                {{ product.price }}
+                {% else %}
+                <span class="price-old">{{ product.price }}</span>
+                <span class="price-new">{{ product.special }}</span>
+                {% endif %}
+                {% if product.tax %}
+                <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
+                {% endif %}
+              </p>
+              {% endif %}
+            </div>
+            <div class="col-sm-6 col-xs-6">
+                <div class="in_cart" onclick="cart.add('{{ product.product_id }}');"><span>В корзину</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+<!--<div class="btn_gold">Добавить набор в корзину</div>-->
+{% else %}
+<h3>По вашим параметрам светильников не найдено.</h3>
+{% endif %}

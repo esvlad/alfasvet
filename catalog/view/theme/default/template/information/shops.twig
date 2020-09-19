@@ -1,0 +1,58 @@
+{{ header }}
+<div id="static" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>Где купить</h2>
+  <div class="shops">
+    <div id="filials">
+      <div class="filials_container">
+        <div class="rowmin filials_dropdown">
+          <div class="col-xs-12">
+            <p class="filials_dropdown_text">Купить нашу продукцию вы можете по адресам:</p>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <div class="dropdown">
+              <p class="filials_dropdown_label">Выберите регион</p>
+              <div id="tabFilials" class="dropdown-toggle" data-toggle="dropdown"><span>Москва и МО</span></div>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="tabFilials">
+                {% if zones %}
+                {% for zone in zones %}
+                <li><a href="#filials_zone{{ zone.id }}" tabindex="-1" data-toggle="tab"><span>{{ zone.name }}</span></a></li>
+                {% endfor %}
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div id="filialsTabContent" class="tab-content filials">
+          {% if zones %}
+          {% for zone in zones %}
+          {% if zone.id == 83 %}{% set active = ' active in' %}{% else %}{% set active = '' %}{% endif %}
+          <div id="filials_zone{{ zone.id }}" class="tab-pane fade{{ active }}">
+            <div class="rowmin">
+              {% for filial in filials[zone.id] %}
+              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="filial_block">
+                  <div class="filial_tite">{{ filial.title }}</div>
+                  <div class="filial_phone">{{ filial.phone }}</div>
+                  <div class="filial_mail">{{ filial.email }}</div>
+                  <div class="filial_caption">
+                    <p>Режим работы:</p>
+                    {{ filial.description }}
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}

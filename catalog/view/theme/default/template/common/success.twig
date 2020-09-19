@@ -1,25 +1,511 @@
 {{ header }}
-<div id="common-success" class="container">
+<div id="checkout-cart" class="container _success">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {{ text_message }}
-      <div class="buttons">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
+  <div class="rowmin">
+    <div id="content" class="col-sm-12">
+      <h1>Корзина</h1>
+      <ul class="list-unstyled cart_steps clearfix">
+        {% if mobile %}
+          <!--<div class="return_btn on"><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12"><g><g><path fill="#707070" d="M5.226 11.52c.218.225.58.225.806 0a.569.569 0 0 0 0-.799L1.944 6.633h13.492c.314 0 .564-.25.564-.565a.568.568 0 0 0-.564-.573H1.944l4.088-4.08a.579.579 0 0 0 0-.807.565.565 0 0 0-.806 0L.169 5.664a.555.555 0 0 0 0 .799z"/></g></g></svg>Вернуться назад</span></div>-->
+        {% endif %}
+        <li class="step on disabled" data-step="1"><span>1</span> Корзина</li>
+        <li class="step on disabled" data-step="2"><span>2</span> <span class="st">{% if not mobile %}Детали получения{% else %}Детали{% endif %}</span></li>
+        <li class="step active disabled" data-step="3"><span>3</span> {% if not mobile %}Заказ оформлен{% else %}Заказ{% endif %}</li>
+        {% if not mobile %}
+          <!--<div class="return_btn"><span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" viewBox="0 0 16 12"><g><g><path fill="#707070" d="M5.226 11.52c.218.225.58.225.806 0a.569.569 0 0 0 0-.799L1.944 6.633h13.492c.314 0 .564-.25.564-.565a.568.568 0 0 0-.564-.573H1.944l4.088-4.08a.579.579 0 0 0 0-.807.565.565 0 0 0-.806 0L.169 5.664a.555.555 0 0 0 0 .799z"/></g></g></svg>Вернуться назад</span></div>-->
+        {% endif %}
+      </ul>
+      <div class="rowmin steps step_first disabled" data-step="1"></div>
+      <div class="rowmin steps step_two disabled" data-step="2">
+        <!--<div class="col-sm-12">
+          <form id="delivery" class="form-horizontal" action="../index.php?route=checkout/checkout/order" method="post" enctype="multipart/form-data">
+            <div class="rowmin delivery_data">
+              <div class="col-sm-12"><h2>Данные для доставки</h2></div>
+              <div class="col-sm-6 delivery_data_1">
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-fio">ФИО</label>
+                    <input type="text" name="name" value="{{ name }}" id="input-fio" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-mail">Email</label>
+                    <input type="email" name="email" value="{{ email }}" id="input-mail" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-phone">Телефон</label>
+                    <input type="tel" name="phone" value="{{ phone }}" id="input-phone" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12 lico">
+                    <label class="control-label" for="user_type">&nbsp;</label>
+                    <div class="row min switcher">
+                      {% if not user_type or user_type == 'Физ.лицо' %}
+                      {% set opacity = ' opacity30' %}
+                      {% set disabled = ' disabled' %}
+                      <div class="col-xs-6 active" data-switch="1">физ.лицо</div>
+                      <div class="col-xs-6" data-switch="2">компания</div>
+                      {% else %}
+                      {% set opacity = '' %}
+                      {% set disabled = '' %}
+                      <div class="col-xs-6" data-switch="1">физ. лицо</div>
+                      <div class="col-xs-6 active" data-switch="2">компания</div>
+                      {% endif %}
+                    </div>
+                    <input type="hidden" name="user_type" value="1">
+                  </div>
+                </div>
+                <div class="form-group _usercomp{{opacity}}">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-inn">ИНН</label>
+                    <input type="text" name="inn" value="{{inn}}" id="input-inn" class="form-control"{{disabled}} />
+                  </div>
+                </div>
+                <div class="form-group _usercomp{{opacity}}">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-file">Загрузить реквизиты компании</label>
+                    {% if file_name %}
+                    <div class="input_file{{disabled}}">
+                      <div id="fountainG" class="loading">
+                        <div id="fountainG_1" class="fountainG"></div>
+                        <div id="fountainG_2" class="fountainG"></div>
+                        <div id="fountainG_3" class="fountainG"></div>
+                        <div id="fountainG_4" class="fountainG"></div>
+                        <div id="fountainG_5" class="fountainG"></div>
+                        <div id="fountainG_6" class="fountainG"></div>
+                        <div id="fountainG_7" class="fountainG"></div>
+                        <div id="fountainG_8" class="fountainG"></div>
+                      </div>
+                      <span>{{file_name}}</span>
+                    </div>
+                    {% else %}
+                    <div class="input_file{{disabled}}">
+                      <div id="fountainG" class="loading">
+                        <div id="fountainG_1" class="fountainG"></div>
+                        <div id="fountainG_2" class="fountainG"></div>
+                        <div id="fountainG_3" class="fountainG"></div>
+                        <div id="fountainG_4" class="fountainG"></div>
+                        <div id="fountainG_5" class="fountainG"></div>
+                        <div id="fountainG_6" class="fountainG"></div>
+                        <div id="fountainG_7" class="fountainG"></div>
+                        <div id="fountainG_8" class="fountainG"></div>
+                      </div>
+                      <span>Выбрать</span>
+                    </div>
+                    {% endif %}
+                    <input type="hidden" name="file_code" value="{{file_code}}" />
+                  </div>
+                </div>
+                {% if not mobile %}
+                <div class="form-group clearfix">
+                  <div class="col-sm-12">
+                    <div id="cart_edit" type="submit" data-loading-text="..." class="btn_black">Изменить</div>
+                    <p class="politics">Нажимая на кнопку, вы соглашаетесь с условиями <a href="{{politics}}" target="_blank">политики конфиденциальности и обработки персональных данных</a></p>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-sm-6 delivery_data_2 _delivery">
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-zone">Регион, Область</label>
+                    <input type="text" name="zone" value="{{ shipping_zone }}" id="input-zone" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-city">Город (населенный пункт)</label>
+                    <input type="text" name="city" value="{{ shipping_city }}" id="input-city" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-address_1">Улица</label>
+                    <input type="text" name="address_1" value="{{ shipping_address_1 }}" id="input-address_1" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-kv">Квартира</label>
+                    <input type="text" name="kv" value="{{ kvartira }}" id="input-kv" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label class="control-label" for="input-postcode">Индекс</label>
+                    <input type="text" name="postcode" value="{{shipping_postcode}}" id="input-postcode" class="form-control" />
+                  </div>
+                </div>
+              </div>
+              {% if mobile %}
+              <div class="col-xs-12">
+                <div class="form-group clearfix">
+                  <div class="col-sm-12">
+                    <div id="cart_edit" type="submit" data-loading-text="..." class="btn_black">Изменить</div>
+                    <p>Нажимая на кнопку, вы соглашаетесь с условиями <a href="{{politics}}" target="_blank">политики конфиденциальности и обработки персональных данных</a></p>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            <input type="hidden" name="order_id" value="{{order_id}}">
+          </form>
+        </div>-->
       </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+      <div class="steps step_tree active"  data-step="3">
+        <div class="step_tree_block">
+          <h2>Ваш заказ №{{ order_id }} оформлен</h2>
+          <p> В ближайшее время с вами свяжется менеджер, подтвердит заказ и поможет организовать доставку.</p>
+          <div class="btn_group">
+            <a id="detail" class="btn_black" href="#" data-toggle="modal" data-target="#detail{{ order_id }}">Детали заказа</a>
+            {% if customer != 0 %}
+              <a class="btn_gold" href="{{ order }}">Перейти в личный кабинет</a>
+            {% else %}
+              <a class="btn_gold" href="#" data-toggle="modal" data-target="#auth">Перейти в личный кабинет</a>
+            {% endif %}
+          </div>
+          {% if customer == 0 %}
+          <div class="success_profile">
+            <h2>Создайте свой профиль </h2>
+            <p>Чтобы легко отслеживать <b>состояние заказа</b>, копить <b>бонусные баллы и пользоваться личным кабинетом.</b></p>
+            <form id="create-profile" class="form-horizontal">
+              <div class="rowmin form_block">
+                <input type="hidden" name="order_id" value="{{ order_id }}">
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label for="" class="control-label">E-mail*</label>
+                    <input type="text" class="form-control" name="email" value="">
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <div class="col-sm-12">
+                    <label for="" class="control-label">Пароль*</label>
+                    <input type="password" class="form-control" name="password" value="">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="" class="control-label">&nbsp;</label>
+                  <div id="create_profile" class="btn_gold"><span>Создать профиль</span></div>
+                </div>
+              </div>
+              <div class="form_success"><span>Спасибо, ваш аккаунт создан!</span></div>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-{{ footer }}
+<div class="modal fade" id="detail{{ order_id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _detail">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_detail">
+            <h2>Детали заказа <span>№{{ order_id }}</span></h2>
+            <div class="detail_products">
+              <h3>Ваши товары</h3>
+              <div class="detail_products_list">
+                {% for produt in products %}
+                <div class="detail_products_item clearfix">
+                  <div class="name">{{ produt.name }}{% if produt.option %} {% for option in produt.option %} <span>{{option.name}}: {{option.value}};</span>{% endfor %}{% endif %}</div>
+                  <div class="quan">{{ produt.quantity }} шт.</div>
+                  <div class="total">{{ produt.total }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.3 35.74"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M18.29,25.05v3.69H8.2v7H3.34v-7H.05V25.05H3.34V20.34H0V16.65H3.34V0H13.4a22,22,0,0,1,5.36.6,11.49,11.49,0,0,1,4.06,1.85A8.25,8.25,0,0,1,25.4,5.58,10.18,10.18,0,0,1,26.3,10a10.72,10.72,0,0,1-.76,4.07,8.5,8.5,0,0,1-2.39,3.28A11.71,11.71,0,0,1,19,19.55a20.34,20.34,0,0,1-6.06.79H8.2v4.71Zm3-15q0-3.44-2-4.91T13.18,3.69h-5v13h4.54a18.33,18.33,0,0,0,3.57-.31A7.16,7.16,0,0,0,19,15.27a4.83,4.83,0,0,0,1.68-2A7.64,7.64,0,0,0,21.25,10.06Z"/></g></g></svg></div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="detail_products_total">Итого: <span>{{ totals }}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></div>
+            </div>
+            <div class="detail_shipay clearfix">
+              <div class="col-md-5 col-sm-6">
+                <h3>Способ оплаты</h3>
+                <p>{{ payment_method }}</p>
+              </div>
+              <div class="col-md-7 col-sm-6">
+                <h3>Способ доставки</h3>
+                <p>{{ shipping_method }}</p>
+                {% if shipping_code == 'pickup' %}
+                  <p class="small">Стоимость доставки транспортной компанией рассчитывается согласно тарифам и оплачивается при получении товара. После оформления заказа с вами свяжется менеджер и поможет организовать доставку</p>
+                {% endif %}
+              </div>
+            </div>
+            <div class="detail_data clearfix">
+              <div class="col-md-5 col-sm-6">
+                <h3>Данные для доставки</h3>
+                <div class="detail_data_list">
+                  <div class="detail_data_item">
+                    <div class="_title">ФИО</div>
+                    <div class="_caption">{{ name }}</div>
+                  </div>
+                  <div class="detail_data_item">
+                    <div class="_title">Email</div>
+                    <div class="_caption">{{ email }}</div>
+                  </div>
+                  <div class="detail_data_item">
+                    <div class="_title">Телефон</div>
+                    <div class="_caption">{{ phone }}</div>
+                  </div>
+                  <div class="detail_data_item">
+                    {% if not user_type %}
+                    <div class="_title">Физ. лицо</div>
+                    {% else %}
+                    <div class="_title">{{user_type}}</div>
+                    {% endif %}
+                    <div class="_caption">&nbsp;</div>
+                  </div>
+                  {% if inn %}
+                  <div class="detail_data_item">
+                    <div class="_title">ИНН</div>
+                    <div class="_caption">{{inn}}</div>
+                  </div>
+                  {% endif %}
+                  {% if file_code %}
+                  <div class="detail_data_item recvz">
+                    <div class="_title">&nbsp;</div>
+                    <div class="_caption">Реквизиты загружены</div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-7 col-sm-6">
+                <h3>&nbsp;</h3>
+                <div class="detail_data_list">
+                  {% if shipping_zone %}
+                  <div class="detail_data_item">
+                    <div class="_title">Регион, Область</div>
+                    <div class="_caption">{{ shipping_zone }}</div>
+                  </div>
+                  {% endif %}
+                  {% if shipping_city %}
+                  <div class="detail_data_item">
+                    <div class="_title">Город ( населенный пункт)</div>
+                    <div class="_caption">{{ shipping_city }}</div>
+                  </div>
+                  {% endif %}
+                  {% if shipping_address_1 %}
+                  <div class="detail_data_item">
+                    <div class="_title">Улица</div>
+                    <div class="_caption">{{ shipping_address_1 }}</div>
+                  </div>
+                  {% endif %}
+                  {% if shipping_postcode %}
+                  <div class="detail_data_item">
+                    <div class="_title">Индекс</div>
+                    <div class="_caption">{{ shipping_postcode }}</div>
+                  </div>
+                  {% endif %}
+                  {% if kvartira %}
+                  <div class="detail_data_item">
+                    <div class="_title">Квартира</div>
+                    <div class="_caption">{{kvartira}}</div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<script>
+  $('.cart_steps .step:not(.disabled)').click(function() {
+    var step = $(this).attr('data-step');
+    $('.cart_steps .step, .steps').removeClass('active link');
+    $('.cart_steps .step[data-step="'+step+'"], .steps[data-step="'+step+'"]').addClass('active');
+    if(step == 3){
+      $('.cart_steps .step[data-step="'+step+'"]').prev().addClass('active link');
+      $('.return_btn').addClass('on');
+    } else {
+      $('.return_btn').removeClass('on');
+    }
+  });
+
+  $('.return_btn').click(function(){
+    $(this).removeClass('on');
+    $('.cart_steps .step, .steps').removeClass('active link');
+    $('.cart_steps .step[data-step="2"], .steps[data-step="2"]').addClass('active');
+  });
+
+  $('.switcher > div').click(function(){
+    var sw = $(this).data('switch');
+
+    if(sw == 1){
+      $('._usercomp').addClass('opacity30');
+      $('._usercomp input').attr('disabled', 'disabled');
+      $('._usercomp .input_file').addClass('disabled');
+    } else {
+      $('._usercomp').removeClass('opacity30');
+      $('._usercomp input').removeAttr('disabled');
+      $('._usercomp .input_file').removeClass('disabled');
+    }
+
+    $('.switcher > div').removeClass('active');
+    $(this).addClass('active');
+    $('.switcher + input[name="user_type"]').val(sw);
+  });
+
+  $('#cart_edit').click(function(e){
+    var cart_form = {};
+    var errors = false;
+
+    $('#delivery .form-group.required label, #delivery .form-group.required input[type="text"]').removeClass('_error');
+
+    $('#delivery .delivery_data_1 .form-group.required').each(function(){
+      if($(this).find('input[type="text"]').val() == ''){
+        errors = true;
+        $(this).find('input[type="text"], label').addClass('_error');
+      }
+    });
+
+    if($('#delivery .delivery_data_2').css('display') == 'block'){
+      $('#delivery .delivery_data_2 .form-group.required').each(function(){
+        if($(this).find('input[type="text"]').val() == ''){
+          errors = true;
+          $(this).find('input[type="text"], label').addClass('_error');
+        }
+      });
+    }
+
+    if(!errors){
+      var delivery_form = {};
+      $('#delivery input').each(function(){
+        delivery_form[$(this).attr('name')] = $(this).val();
+      });
+
+      $.ajax({
+        url: 'index.php?route=checkout/success/order_edit',
+        data: delivery_form,
+        type: 'post',
+        dataType: 'json',
+        success: function(json){
+          console.log(json);
+          
+          if(json.success){
+            location.reload();
+          }
+
+          /*if(json.success){
+            $('#create-profile .form_block').animate({'opacity': 0}, 150);
+            $('#create-profile .form_success').fadeIn(150);
+          }*/
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+
+    } else {
+      e = e || event;
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  $('#create_profile').click(function(){
+    var profile_form = {};
+    var errors = false;
+
+    $('#create-profile input, #create-profile label').removeClass('_error');
+
+    if($('#create-profile input[name="email"]').val() == '' || $('#create-profile input[name="email"]').val().length < 7){
+      $('#create-profile input[name="email"]').addClass('_error');
+      $('#create-profile input[name="email"]').prev().addClass('_error');
+      errors = true;
+    }
+
+    if($('#create-profile input[name="password"]').val() == '' || $('#create-profile input[name="email"]').val().length < 6){
+      $('#create-profile input[name="password"]').addClass('_error');
+      $('#create-profile input[name="password"]').prev().addClass('_error');
+      errors = true;
+    }
+
+    if(!errors){
+      profile_form['email'] = $('#create-profile input[name="email"]').val();
+      profile_form['password'] = $('#create-profile input[name="password"]').val();
+      profile_form['order_id'] = $('#create-profile input[name="order_id"]').val();
+
+      $.ajax({
+        url: 'index.php?route=checkout/success/registration',
+        data: profile_form,
+        type: 'post',
+        dataType: 'json',
+        success: function(json){
+          console.log(json);
+          if(json.errors){
+            $('#create-profile input[name="email"]').parent().append('<p class="error_text">'+json.errors+'<p>');
+          }
+
+          if(json.success){
+            $('#create-profile .form_block').animate({'opacity': 0}, 150);
+            $('#create-profile .form_success').fadeIn(150);
+          }
+        },
+        error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+    }
+  });
+
+  $('.input_file').on('click', function() {
+    var element = this;
+
+    if($(this).hasClass('disabled')) return false;
+
+    $('#form-upload').remove();
+
+    $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+    $('#form-upload input[name="file"]').trigger('click');
+
+    if (typeof timer != 'undefined') {
+        clearInterval(timer);
+    }
+
+    timer = setInterval(function() {
+      if ($('#form-upload input[name="file"]').val() != '') {
+        clearInterval(timer);
+
+        $.ajax({
+          url: 'index.php?route=tool/upload',
+          type: 'post',
+          dataType: 'json',
+          data: new FormData($('#form-upload')[0]),
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: function() {
+            $(element).children('.loading').addClass('on');
+          },
+          success: function(json) {
+            if (json['error']) {
+              alert(json['error']);
+            }
+
+            if (json['success']) {
+              //alert(json['success']);
+
+              $(element).children('.loading').removeClass('on');
+              $(element).children('span').text(json['origin_name']);
+              $(element).next().val(json['code']);
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          }
+        });
+      }
+    }, 500);
+  });
+</script>
+{{ footer }} 

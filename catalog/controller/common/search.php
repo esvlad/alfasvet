@@ -11,6 +11,8 @@ class ControllerCommonSearch extends Controller {
 			$data['search'] = '';
 		}
 
+		$data['action'] = $this->url->link('product/search');
+
 		return $this->load->view('common/search', $data);
 	}
 }

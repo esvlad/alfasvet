@@ -1,0 +1,63 @@
+<div class="rowmin filials_dropdown">
+  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+    <div class="dropdown">
+      <div id="tabFilials" class="dropdown-toggle" data-toggle="dropdown"><span>Москва и МО</span></div>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="tabFilials">
+        {% if zones %}
+        {% for zone in zones %}
+        <li><a href="#filials_zone{{ zone.id }}" tabindex="-1" data-toggle="tab"><span>{{ zone.name }}</span></a></li>
+        {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 filials_dropdown_caption">Выберите интересующий <br>вас регион</div>
+</div>
+<div id="filialsTabContent" class="tab-content filials">
+  {% if zones %}
+  {% for zone in zones %}
+  {% if zone.id == 83 %}{% set active = ' active in' %}{% else %}{% set active = '' %}{% endif %}
+  <div id="filials_zone{{ zone.id }}" class="tab-pane fade{{ active }}">
+    <div class="rowmin">
+      {% for filial in filials[zone.id] %}
+      <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="filial_block">
+          <div class="filial_tite">{{ filial.title }}</div>
+          <div class="filial_phone">{{ filial.phone }}</div>
+          <div class="filial_mail">{{ filial.email }}</div>
+          <div class="filial_caption">
+            <p>Режим работы:</p>
+            {{ filial.description }}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<script>
+var winWidth = $(window).outerWidth();
+
+function fb_reguler(){
+  var fb_height = 0;
+
+  $('.filials > .active > div > div').each(function(){
+    if($(this).children('.filial_block').outerHeight() > fb_height){
+      fb_height = $(this).children('.filial_block').outerHeight();
+    }
+  });
+
+  $('.filials > .active > div > div').each(function(){
+    $(this).children('.filial_block').css('height', fb_height+'px');
+  });
+}
+
+fb_reguler();
+
+  $('.filials_dropdown .dropdown-menu > li > a').click(function(){
+    $(this).parents('.dropdown').find('.dropdown-toggle > span').text($(this).children('span').text());
+    fb_reguler();
+  });
+</script>

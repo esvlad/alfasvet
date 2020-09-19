@@ -747,6 +747,14 @@ class ControllerCatalogProduct extends Controller {
 			$data['minimum'] = 1;
 		}
 
+		if (isset($this->request->post['maximum'])) {
+			$data['maximum'] = $this->request->post['maximum'];
+		} elseif (!empty($product_info)) {
+			$data['maximum'] = $product_info['maximum'];
+		} else {
+			$data['maximum'] = '';
+		}
+
 		if (isset($this->request->post['subtract'])) {
 			$data['subtract'] = $this->request->post['subtract'];
 		} elseif (!empty($product_info)) {
@@ -938,6 +946,7 @@ class ControllerCatalogProduct extends Controller {
 
 		// Options
 		$this->load->model('catalog/option');
+		$this->load->model('tool/image');
 
 		if (isset($this->request->post['product_option'])) {
 			$product_options = $this->request->post['product_option'];
@@ -954,11 +963,21 @@ class ControllerCatalogProduct extends Controller {
 
 			if (isset($product_option['product_option_value'])) {
 				foreach ($product_option['product_option_value'] as $product_option_value) {
+					if (is_file(DIR_IMAGE . $product_option_value['image'])) {
+						$image = $product_option_value['image'];
+						$thumb = $product_option_value['image'];
+					} else {
+						$image = '';
+						$thumb = 'no_image.png';
+					}
+
 					$product_option_value_data[] = array(
 						'product_option_value_id' => $product_option_value['product_option_value_id'],
 						'option_value_id'         => $product_option_value['option_value_id'],
 						'quantity'                => $product_option_value['quantity'],
 						'subtract'                => $product_option_value['subtract'],
+						'image'                   => $image,
+						'thumb'                   => $this->model_tool_image->resize($thumb, 100, 100),
 						'price'                   => $product_option_value['price'],
 						'price_prefix'            => $product_option_value['price_prefix'],
 						'points'                  => $product_option_value['points'],
@@ -1044,8 +1063,6 @@ class ControllerCatalogProduct extends Controller {
 			$data['image'] = '';
 		}
 
-		$this->load->model('tool/image');
-
 		if (isset($this->request->post['image']) && is_file(DIR_IMAGE . $this->request->post['image'])) {
 			$data['thumb'] = $this->model_tool_image->resize($this->request->post['image'], 100, 100);
 		} elseif (!empty($product_info) && is_file(DIR_IMAGE . $product_info['image'])) {
@@ -1128,6 +1145,27 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
+		if (isset($this->request->post['product_related_categories'])) {
+			$related_categories = $this->request->post['product_related_categories'];
+		} elseif (isset($this->request->get['product_id'])) {
+			$related_categories = $this->model_catalog_product->getProductRelatedCategories($this->request->get['product_id']);
+		} else {
+			$related_categories = array();
+		}
+
+		$data['product_related_categories'] = array();
+
+		foreach ($related_categories as $category_id) {
+			$related_category_info = $this->model_catalog_category->getCategory($category_id);
+
+			if ($related_category_info) {
+				$data['product_related_categories'][] = array(
+					'category_id' => $related_category_info['category_id'],
+					'name'       => ($related_category_info['path']) ? $related_category_info['path'] . ' &gt; ' . $related_category_info['name'] : $related_category_info['name']
+				);
+			}
+		}
+
 		if (isset($this->request->post['points'])) {
 			$data['points'] = $this->request->post['points'];
 		} elseif (!empty($product_info)) {
@@ -1186,9 +1224,9 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
-		if ((utf8_strlen($this->request->post['model']) < 1) || (utf8_strlen($this->request->post['model']) > 64)) {
+		/*if ((utf8_strlen($this->request->post['model']) < 1) || (utf8_strlen($this->request->post['model']) > 64)) {
 			$this->error['model'] = $this->language->get('error_model');
-		}
+		}*/
 
 		if ($this->request->post['product_seo_url']) {
 			$this->load->model('design/seo_url');
@@ -1290,6 +1328,7 @@ class ControllerCatalogProduct extends Controller {
 									'product_option_value_id' => $product_option_value['product_option_value_id'],
 									'option_value_id'         => $product_option_value['option_value_id'],
 									'name'                    => $option_value_info['name'],
+									'image'					  => $product_option_value['image'],
 									'price'                   => (float)$product_option_value['price'] ? $this->currency->format($product_option_value['price'], $this->config->get('config_currency')) : false,
 									'price_prefix'            => $product_option_value['price_prefix']
 								);

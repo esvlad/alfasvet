@@ -1,62 +1,83 @@
 {{ header }}
-<div id="account-account" class="container">
+<div id="account-account" class="container page-{{page}}">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  {% if success %}
-  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}</div>
-  {% endif %}
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h2>{{ text_my_account }}</h2>
-      <ul class="list-unstyled">
-        <li><a href="{{ edit }}">{{ text_edit }}</a></li>
-        <li><a href="{{ password }}">{{ text_password }}</a></li>
-        <li><a href="{{ address }}">{{ text_address }}</a></li>
-        <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
-      </ul>
-      {% if credit_cards %}
-      <h2>{{ text_credit_card }}</h2>
-      <ul class="list-unstyled">
-        {% for credit_card in credit_cards %}
-        <li><a href="{{ credit_card.href }}">{{ credit_card.name }}</a></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-      <h2>{{ text_my_orders }}</h2>
-      <ul class="list-unstyled">
-        <li><a href="{{ order }}">{{ text_order }}</a></li>
-        <li><a href="{{ download }}">{{ text_download }}</a></li>
-        {% if reward %}
-        <li><a href="{{ reward }}">{{ text_reward }}</a></li>
-        {% endif %}
-        <li><a href="{{ return }}">{{ text_return }}</a></li>
-        <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
-        <li><a href="{{ recurring }}">{{ text_recurring }}</a></li>
-      </ul>
-      <h2>{{ text_my_affiliate }}</h2>
-      <ul class="list-unstyled">
-        {% if not tracking %}
-        <li><a href="{{ affiliate }}">{{ text_affiliate_add }}</a></li>
-        {% else %}
-        <li><a href="{{ affiliate }}">{{ text_affiliate_edit }}</a></li>
-        <li><a href="{{ tracking }}">{{ text_tracking }}</a></li>
-        {% endif %}
-      </ul>
-      <h2>{{ text_my_newsletter }}</h2>
-      <ul class="list-unstyled">
-        <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
-      </ul>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+  <h2>Личный кабинет</h2>
+  <div class="row">
+    {{ column_left }}
+    <div id="content" class="col-md-9 col-sm-8 account_content account_content_profile">
+      <h3>Профиль</h3>
+      <form action="{{ action }}" method="post" enctype="multipart/form-data" class="form-horizontal account_profile">
+        <div class="form-group required">
+          <label for="input-firstname" class="control-label">Имя*</label>
+          <input id="input-firstname" type="text" class="form-control" name="firstname" value="{{ firstname }}">
+        </div>
+        <div class="form-group required">
+          <label for="input-email" class="control-label">E-mail*</label>
+          <input id="input-email" type="text" class="form-control" name="email" value="{{ email }}">
+        </div>
+        <div class="form-group required">
+          <label for="input-telephone" class="control-label">Номер телефона*</label>
+          <input id="input-telephone" type="text" class="form-control" name="telephone" value="{{ telephone }}">
+        </div>
+        <div class="form-group required">
+          <label for="" class="control-label">Пароль*</label>
+          <input type="password" class="form-control" name="password" value="">
+        </div>
+        <div class="form-group required">
+          <label for="" class="control-label">Повторите пароль*</label>
+          <input type="password" class="form-control" name="confirm" value="">
+        </div>
+        <div class="form-group required">
+          <label class="control-label" for="user_type">&nbsp;</label>
+          <div class="row min switcher">
+            {% if user_type == 1 %}
+            {% set usercopm = ' opacity30' %}
+            {% set disabled = 'disabled' %}
+            <div class="col-xs-6 active" data-switch="1">физ. лицо</div>
+            <div class="col-xs-6" data-switch="2">компания</div>
+            {% else %}
+            {% set usercopm = '' %}
+            {% set disabled = '' %}
+            <div class="col-xs-6" data-switch="1">физ. лицо</div>
+            <div class="col-xs-6 active" data-switch="2">компания</div>
+            {% endif %}
+          </div>
+          <input type="hidden" name="custom_field[account][4]" value="{{user_type}}">
+        </div>
+        <div class="form-group _usercomp{{usercopm}}">
+          <label class="control-label" for="input-custom-field2">ИНН</label>
+          <input type="text" name="custom_field[account][2]" value="{{inn}}" id="input-custom-field2" class="form-control" {{disabled}} />
+        </div>
+        <div class="form-group _usercomp{{usercopm}}">
+          <label class="control-label" for="input-custom-field1">Загрузить реквизиты компании</label>
+          <div class="input_file_reg">
+            <div id="fountainG" class="loading">
+              <div id="fountainG_1" class="fountainG"></div>
+              <div id="fountainG_2" class="fountainG"></div>
+              <div id="fountainG_3" class="fountainG"></div>
+              <div id="fountainG_4" class="fountainG"></div>
+              <div id="fountainG_5" class="fountainG"></div>
+              <div id="fountainG_6" class="fountainG"></div>
+              <div id="fountainG_7" class="fountainG"></div>
+              <div id="fountainG_8" class="fountainG"></div>
+            </div>
+            {% if rekvizits_name %}
+            <span>{{rekvizits_name}}</span>
+            {% else %}
+            <span>Выбрать</span>
+            {% endif %}
+          </div>
+          <input type="hidden" name="custom_field[account][1]" value="{{rekvizits}}" id="input-custom-field1" />
+        </div>
+        <div class="form-group form_btn">
+          <input type="submit" value="Сохранить" class="btn_black" />
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {{ footer }}

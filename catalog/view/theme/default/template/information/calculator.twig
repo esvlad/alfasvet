@@ -1,0 +1,298 @@
+{{ header }}
+<div id="calculator" class="container">
+	<ul class="breadcrumb">
+		{% for breadcrumb in breadcrumbs %}
+		<li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+		{% endfor %}
+	</ul>
+	<h2>Расчет освещенности</h2>
+	<div class="rowmin calculator">
+		<div class="col-xs-12">
+			<div class="calculator_container clearfix">
+				<div class="calculator_block">
+					<form id="form-calculator" class="form-horizontal form_calculator">
+						<div class="form-group form_calculator_group">
+							<h3>1) Для какого помещения требуются светильники?</h3>
+							<div class="form-group-block">
+								<div class="inputs">
+									<input id="type1" type="radio" name="type" value="300">
+									<label for="type1">Жилая комната</label>
+								</div>
+								<div class="inputs">
+									<input id="type2" type="radio" name="type" value="350">
+									<label for="type2">Кухня/столовая</label>
+								</div>
+								<div class="inputs">
+									<input id="type3" type="radio" name="type" value="250">
+									<label for="type3">Санузел/ванная комната</label>
+								</div>
+								<div class="inputs">
+									<input id="type4" type="radio" name="type" value="250">
+									<label for="type4">Квартирные коридоры</label>
+								</div>
+								<div class="inputs">
+									<input id="type5" type="radio" name="type" value="450">
+									<label for="type5">Учебный класс/кабинет</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group form_calculator_group">
+							<h3>2) Высота потолка</h3>
+							<div class="form-group-block">
+								<div class="inputs">
+									<input id="height1" type="radio" name="height" value="1">
+									<label for="height1">2,5-2,7 м</label>
+								</div>
+								<div class="inputs">
+									<input id="height2" type="radio" name="height" value="1.2">
+									<label for="height2">2,7-3 м</label>
+								</div>
+								<div class="inputs">
+									<input id="height3" type="radio" name="height" value="1.5">
+									<label for="height3">3-3,5 м</label>
+								</div>
+								<div class="inputs">
+									<input id="height4" type="radio" name="height" value="2">
+									<label for="height4">3,5-4,5 м</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group form_calculator_group">
+							<h3>3) Площадь помещения</h3>
+							<div class="form-group-block">
+								<div class="calc_input">
+									<input type="text" class="form-control" name="area" value="">
+									<span>кв.м.</span>
+								</div>
+							</div>
+						</div>
+						<div class="form-group form_calculator_group">
+							<h3>4) Желаемое количество светильников</h3>
+							<div class="form-group-block">
+								<div class="range_block">
+			                        <div class="range range_fpower" data-min="1" data-max="20" data-step="1" data-suffix=" шт"></div>
+			                        <div class="row range_values">
+			                            <label class="col-sm-6">
+			                                <span>от</span>
+			                                <input type="text" name="count[to]" value="1 шт">
+			                            </label>
+			                            <label class="col-sm-6">
+			                                <span>до</span>
+			                                <input type="text" name="count[from]" value="20 шт">
+			                            </label>
+			                        </div>
+			                    </div>
+							</div>
+						</div>
+						<div class="form-group form_calculator_group">
+							<h3>5) Стоимость светильника (1 шт.)</h3>
+							<div class="form-group-block">
+								<div class="inputs">
+									<input id="price1" type="radio" name="price" value="0">
+									<label for="price1">любая</label>
+								</div>
+								<div class="inputs">
+									<input id="price2" type="radio" name="price" value="200">
+									<label for="price2">от 0 до 200 рублей</label>
+								</div>
+								<div class="inputs">
+									<input id="price3" type="radio" name="price" value="400">
+									<label for="price3">от 200 до 400 рублей</label>
+								</div>
+								<div class="inputs">
+									<input id="price4" type="radio" name="price" value="800">
+									<label for="price4">от 400 до 800 рублей</label>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="calculator_block_result">
+						<h2>Результат:</h2>
+						<p class="calculator_block_result_message">Пожалуйста, укажите все параметры расчета</p>
+						<p class="calculator_block_result_result">Для комфортного освещения вашего помещения потребуется: <b><span class="result"></span> лм</b>.</p>
+					</div>
+				</div>
+			</div>
+			<!-- Сколько светильников вам для этого нужно -->
+			<div class="calculator_products"></div>
+			<div class="calculator_form">
+				<form id="form-raschet" class="form-horizontal form_raschet">
+					<div class="form_block">
+					    <div class="form_title clearfix">
+					    	<h3>Подробный расчет</h3>
+					    	<p>Оставьте ваши данные и&nbsp;менеджер пришлет точный расчет с&nbsp;подобранными марками светильников, диодной лентой или трековыми системами.</p>
+					    </div>
+					    <div class="rowmin">
+						    <div class="col-xs-12 col-sm-10">
+						        <div class="form-group required">
+						          <div class="col-sm-12">
+						            <label for="" class="control-label">Имя</label>
+						            <input type="text" id="m-name" class="form-control" name="name" value="">
+						          </div>
+						        </div>
+						        <div class="form-group required">
+						          <div class="col-sm-12">
+						            <label for="" class="control-label">Телефон</label>
+						            <input type="tel" id="m-phone" class="form-control" name="phone" value="">
+						          </div>
+						        </div>
+						        <div class="form-group required">
+						          <div class="col-sm-12">
+						            <label for="" class="control-label">E-mail</label>
+						            <input type="email" id="m-mail" class="form-control" name="email" value="">
+						          </div>
+						        </div>
+						        <div id="raschet-btn" class="btn_gold"><span>Отправить</span></div>
+						        <p class="politics">Нажимая на кнопку, вы соглашаетесь с условиями политики конфиденциальности и обработки персональных данных</p>
+						    </div>
+					    </div>
+					</div>
+					<div class="form_success"><span>Спасибо, ваша заявка отправлена!</span></div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	if(sessionStorage.getItem('calculator')){
+		var calc = JSON.parse(sessionStorage.getItem('calculator'));
+
+		$.each(calc, function(key, value){
+			if($('#form-calculator input[name="'+key+'"]').attr('type') == 'radio'){
+				$('#form-calculator input[name="'+key+'"][value="'+value+'"]').attr('checked','checked');
+			} else {
+				$('#form-calculator input[name="'+key+'"]').val(value);
+			}
+		});
+
+		calculator();
+	}
+
+	$('.range').each(function(){
+		var self = $(this);
+		var range_values = self.next('.range_values');
+
+		self.slider({
+			range: true,
+		    min: self.data('min'),
+		    max: self.data('max'),
+		    step: self.data('step'),
+		    values: [self.data('min'), self.data('max')],
+		    slide: function( event, ui ) {
+		      range_values.find('label:first input').val(ui.values[0] + self.data('suffix'));
+		      range_values.find('label:last input').val(ui.values[1] + self.data('suffix'));
+		    },
+		    change: function(event, ui) {
+		      calculator();
+		    }
+		});
+	});
+
+	$('#raschet-btn').click(function(){
+		$('#form-raschet').trigger('submit');
+	});
+
+	var products = [];
+	{% for product in products %}
+		products.push({{product.product_id}});
+	{% endfor %}
+	$('.calculator_products .btn_gold').click(function(){
+		$(this).addClass('on').text('Добавлено');
+
+		$.each(products, function(key, value){
+			cart.add(value);
+		});
+	});
+
+	$('#form-raschet').submit(function(e){
+		e = e || event;
+		e.preventDefault();
+
+		var self = $(this);
+		var form_data = {};
+		var form_error = false;
+
+		$('#form-raschet input, #form-raschet label').removeClass('_error');
+
+		$('#form-raschet input').each(function(){
+			if($(this).val() == ''){
+				$(this).addClass('_error');
+				$(this).prev().addClass('_error');
+				form_error = true;
+			}
+		});
+
+		if(!form_error){
+			$.ajax({
+				url: 'index.php?route=common/footer/specialist',
+				type: 'post',
+				data: form_data,
+				dataType: 'json',
+				complete: function() {
+					self.find('.btn_review').text('Отправляется');
+				},
+				success: function(json) {
+					console.log(json);
+
+					if(json.success){
+						self.find('.form_block').animate({'opacity': 0}, 150);
+						self.find('.form_success').fadeIn(150);
+
+						setTimeout(function(){
+							self.find('input._required, textarea._required').each(function(){
+								$(this).val('');
+							});
+
+							self.find('.form_success').fadeOut(150);
+							self.find('.form_block').animate({'opacity': 1}, 150);
+						}, 3500);
+					}
+				}
+			});
+		}
+	});
+
+	$('#form-calculator input[type="text"]').bind('input', function(){
+		calculator();
+	});
+
+	$('#form-calculator input').change(function(){
+		calculator();
+	});
+
+	function calculator(){
+		var form = {}, count = 0;
+
+		$('#form-calculator input').each(function(){
+			if(($(this).attr('type') != 'radio' && $(this).val() != '') || ($(this).attr('type') == 'radio' && $(this).is(':checked'))){
+				form[$(this).attr('name')] = $(this).val();
+
+				count++;
+			}
+		});
+
+		sessionStorage.setItem('calculator', JSON.stringify(form));
+
+		if(count == 6){
+			console.log(form);
+
+			$('.result').text(parseInt(parseInt(form['type']) * parseFloat(form['height']) * parseFloat(form['area'])));
+			$('.calculator_block_result_message').css('display', 'none');
+			$('.calculator_block_result_result').css('display', 'block');
+
+			$.ajax({
+		      url: 'index.php?route=information/information/calculator_calculate',
+		      type: 'post',
+		      data: form,
+		      dataType: 'html',
+		      success: function(html) {
+		      	$('.calculator_products').html(html);
+		      },
+		      error: function(xhr, ajaxOptions, thrownError){
+		        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		      }
+		    });
+		}
+	}
+</script>
+{{ footer }}

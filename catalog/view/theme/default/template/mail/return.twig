@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{{ title }}</title>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #000000; line-height: 20px;">
+<div style="width: 680px;"><a href="{{ store_url }}" title="{{ store_name }}"><img src="{{ store_url }}catalog/view/theme/default/img/logo_png.png" alt="{{ store_name }}" style="margin-bottom: 30px; border: none;" /></a>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Данные с формы возврата:</b></p>
+  {% if company %}
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Компания:</b> {{company}}</p>
+  {% endif %}
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Имя:</b> {{name}}</p>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Телефон:</b> {{phone}}</p>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Планируемая дата отправки:</b> {{date}}</p>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Наименование товара:</b> {{product_name}}</p>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Количество:</b> {{quantity}}</p>
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Причина возврата:</b> {{comment}}</p>
+  {% if file %}
+  <p style="margin-top: 0px; margin-bottom: 10px;"><b>Бланк возврата:</b> <a href="{{file}}" target="_blank">{{file}}</a></p>
+  {% endif %}
+</div>
+</body>
+</html>

@@ -28,7 +28,15 @@ class ControllerAccountRegister extends Controller {
 
 			unset($this->session->data['guest']);
 
-			$this->response->redirect($this->url->link('account/success'));
+			if(isset($this->request->post['redirect'])){
+				$this->response->redirect($this->request->post['redirect']);
+			}
+
+			if ($this->cart->hasProducts()) {
+				$this->response->redirect($this->url->link('checkout/cart'));
+			} else {
+				$this->response->redirect($this->url->link('account/account', '', true));
+			}
 		}
 
 		$data['breadcrumbs'] = array();
@@ -222,9 +230,9 @@ class ControllerAccountRegister extends Controller {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
 
-		if ((utf8_strlen(trim($this->request->post['lastname'])) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
+		/*if ((utf8_strlen(trim($this->request->post['lastname'])) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
 			$this->error['lastname'] = $this->language->get('error_lastname');
-		}
+		}*/
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
 			$this->error['email'] = $this->language->get('error_email');
@@ -278,7 +286,7 @@ class ControllerAccountRegister extends Controller {
 		}
 
 		// Agree to terms
-		if ($this->config->get('config_account_id')) {
+		/*if ($this->config->get('config_account_id')) {
 			$this->load->model('catalog/information');
 
 			$information_info = $this->model_catalog_information->getInformation($this->config->get('config_account_id'));
@@ -286,7 +294,7 @@ class ControllerAccountRegister extends Controller {
 			if ($information_info && !isset($this->request->post['agree'])) {
 				$this->error['warning'] = sprintf($this->language->get('error_agree'), $information_info['title']);
 			}
-		}
+		}*/
 		
 		return !$this->error;
 	}
@@ -310,6 +318,69 @@ class ControllerAccountRegister extends Controller {
 				'custom_field_id' => $custom_field['custom_field_id'],
 				'required'        => $custom_field['required']
 			);
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function registration(){
+		$this->load->model('account/customer');
+		
+		if($this->request->server['REQUEST_METHOD'] == 'POST'){
+			$data = array();
+			$field = array();
+
+			$field['customer_group_id'] = 1;
+			$field['email'] = $this->session->data['email'];
+			$field['password'] = $this->session->data['password'];
+
+			$field['lastname'] = '';
+			$field['telephone'] = '';
+
+			$customer_id = $this->model_account_customer->addCustomer($field);			
+		}
+	}
+
+	public function registration_form(){
+		$json = [];
+
+		$this->load->model('account/customer');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST')){
+			if ((utf8_strlen(trim($this->request->post['firstname'])) < 1) || (utf8_strlen(trim($this->request->post['firstname'])) > 32)) {
+				$json['errors']['firstname'] = 'Не корректное имя.';
+			}
+
+			if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
+				$json['errors']['email'] = 'Не корректный email адрес.';
+			}
+
+			if ($this->model_account_customer->getTotalCustomersByEmail($this->request->post['email'])) {
+				$json['warning']['email'] = 'Аккаунт с таким email адресом уже зарегистрирован.';
+			}
+
+			if ((utf8_strlen($this->request->post['telephone']) < 8) || (utf8_strlen($this->request->post['telephone']) > 32)) {
+				$json['errors']['telephone'] = 'Не корректный номер телефона адрес.';
+			}
+
+			if ((utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
+				$json['errors']['password'] = 'Не корректный пароль.';
+			}
+
+			if ($this->request->post['confirm'] != $this->request->post['password']) {
+				$json['errors']['confirm'] = 'Пароли не совпадают.';
+			}
+		} else {
+			$json['errors'][] = 'Не правильно произведен запрос к контроллеру.';
+		}
+
+		if(empty($json['errors'])){
+			if(isset($this->request->post['redirect'])){
+				$json['redirect'] = $this->request->post['redirect'];
+			} else {
+				$json['redirect'] = $this->url->link('account/account');
+			}
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

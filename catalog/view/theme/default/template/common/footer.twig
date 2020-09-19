@@ -1,50 +1,294 @@
-<footer>
+<div class="modal fade" id="dillerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _diller">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_vakancy_block clearfix">
+            <form id="diller-form" class="form-horizontal form-diller">
+              <input type="hidden" name="form_name" value="Стать дилером">
+              <div class="form_block">
+                <div class="form_title clearfix">
+                  <h3>Стать дилером</h3>
+                </div>
+                <div class="rowmin">
+                  <div class="col-xs-12 col-sm-6">
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Имя</label>
+                          <input type="text" id="diller-name" class="form-control" name="name" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Телефон</label>
+                          <input type="tel" id="diller-phone" class="form-control" name="phone" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Город</label>
+                          <input type="text" id="diller-city" class="form-control" name="city" value="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Компания</label>
+                          <input type="text" id="diller-company" class="form-control" name="company" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">ИНН</label>
+                          <input type="text" id="diller-inn" class="form-control" name="inn" value="">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <div id="diller-btn" class="btn_gold" data-vakancy="0"><span>Оставить заявку</span></div>
+                        <p class="politics">Нажимая на&nbsp;кнопку, вы&nbsp;соглашаетесь с&nbsp;условиями политики конфиденциальности и&nbsp;обработки персональных данных.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form_success"><span>Спасибо, ваша заявка отправлена!</span></div>
+            </form>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="tenderModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _diller">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_vakancy_block clearfix">
+            <form id="tender-form" class="form-horizontal form-diller">
+              <input type="hidden" name="form_name" value="Участие в тендере">
+              <div class="form_block">
+                <div class="form_title clearfix">
+                  <h3>Участие в тендере</h3>
+                </div>
+                <div class="rowmin">
+                  <div class="col-xs-12 col-sm-6">
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Имя</label>
+                          <input type="text" id="tender-name" class="form-control" name="name" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Телефон</label>
+                          <input type="tel" id="tender-phone" class="form-control" name="phone" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Город</label>
+                          <input type="text" id="tender-city" class="form-control" name="city" value="">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-xs-12 col-sm-6">
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">Компания</label>
+                          <input type="text" id="tender-company" class="form-control" name="company" value="">
+                      </div>
+                    </div>
+                    <div class="form-group required">
+                      <div class="col-sm-12">
+                          <label for="" class="control-label">ИНН</label>
+                          <input type="text" id="tender-inn" class="form-control" name="inn" value="">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-12">
+                        <div id="diller-btn" class="btn_gold" data-vakancy="0"><span>Оставить заявку</span></div>
+                        <p class="politics">Нажимая на&nbsp;кнопку, вы&nbsp;соглашаетесь с&nbsp;условиями политики конфиденциальности и&nbsp;обработки персональных данных.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form_success"><span>Спасибо, ваша заявка отправлена!</span></div>
+            </form>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="chemodanModal" style="display: block; opacity: 0; position: absolue; z-index-1;" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _chemodan">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_chemodan_block clearfix">
+            <div class="_title">
+              <h2>Чемодан замерщика</h2>
+              <p>Приобретая 70 светильников, вы&nbsp;получаете чемодан замерщика.</p>
+            </div>
+            {{chemodan}}
+            <div class="_caption">
+              <div class="block_left">
+                <p><b>Комплект включает в&nbsp;себя:</b> <br>+&nbsp;70&nbsp;светильников <br>(по&nbsp;7&nbsp;шт. каждой позиции) <br>+ Каталоги &laquo;Альфа Свет&raquo;</p>
+              </div>
+              <div class="block_right">
+                <p class="_price">19 999 Р</p>
+                <div class="btn_black btn_svets" onclick="cart.add('51');">В корзину</div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<footer class="tablet not_mobile">
   <div class="container">
-    <div class="row">
-      {% if informations %}
-      <div class="col-sm-3">
-        <h5>{{ text_information }}</h5>
+    <div class="rowmin">
+      <div class="col-sm-12 col-md-6 flogo">
+        <div class="footer_logo"><a href="{{home}}"><img src="catalog/view/theme/default/img/svg/logo_white.svg" /></a></div>
+        <p class="company_name">Альфа свет 2020г.</p>
+        <p class="footer_politics"><a href="{{politics}}">Политика конфиденциальности</a></p>
+      </div>
+    </div>
+    <div class="rowmin">
+      <div class="col-sm-4 footer_center">
+        <h5>Покупателю</h5>
         <ul class="list-unstyled">
-         {% for information in informations %}
-          <li><a href="{{ information.href }}">{{ information.title }}</a></li>
+          <li><a href="{{products}}">О продукции</a></li>
+          <li><a href="{{optovikam}}">Дилерам</a></li>
+          <li><a href="{{delivery}}">Доставка</a></li>
+          <li><a href="{{gorantii}}">Гарантия</a></li>
+          <li><a href="{{payment}}">Оплата</a></li>
+          <li><a href="{{proizvodstvo}}">Производство</a></li>
+          <li><a href="{{shops}}">Где купить</a></li>
+          <li><a href="{{vozvrat}}">Возврат</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-4 footer_center">
+        <h5>Общая информация</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{stocks}}">Акции</a></li>
+          <li><a href="{{about_us}}">О компании</a></li>
+          <li><a href="{{news}}">Новости</a></li>
+          <li><a href="{{contact}}">Контакты</a></li>
+          <li><a href="{{kompanii}}">Для студии потолков</a></li>
+          <li><a href="{{marketing}}">Маркетинговая продукция</a></li>
+          <li><a href="{{faq}}">Поддержка (FAQ)</a></li>
+          <li><a href="{{vakancy}}">Вакансии</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-4 footer_center">
+        <h5>Каталог</h5>
+        <ul class="list-unstyled">
+          {% if categories %}
+          {% for category in categories %}
+          <li><a href="{{ category.href }}">{{ category.name }}</a></li>
           {% endfor %}
-        </ul>
-      </div>
-      {% endif %}
-      <div class="col-sm-3">
-        <h5>{{ text_service }}</h5>
-        <ul class="list-unstyled">
-          <li><a href="{{ contact }}">{{ text_contact }}</a></li>
-          <li><a href="{{ return }}">{{ text_return }}</a></li>
-          <li><a href="{{ sitemap }}">{{ text_sitemap }}</a></li>
-        </ul>
-      </div>
-      <div class="col-sm-3">
-        <h5>{{ text_extra }}</h5>
-        <ul class="list-unstyled">
-          <li><a href="{{ manufacturer }}">{{ text_manufacturer }}</a></li>
-          <li><a href="{{ voucher }}">{{ text_voucher }}</a></li>
-          <li><a href="{{ affiliate }}">{{ text_affiliate }}</a></li>
-          <li><a href="{{ special }}">{{ text_special }}</a></li>
-        </ul>
-      </div>
-      <div class="col-sm-3">
-        <h5>{{ text_account }}</h5>
-        <ul class="list-unstyled">
-          <li><a href="{{ account }}">{{ text_account }}</a></li>
-          <li><a href="{{ order }}">{{ text_order }}</a></li>
-          <li><a href="{{ wishlist }}">{{ text_wishlist }}</a></li>
-          <li><a href="{{ newsletter }}">{{ text_newsletter }}</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>
-    <hr>
-    <p>{{ powered }}</p>
+    <div class="rowmin">
+      <div class="col-sm-4 footer_left">
+        <div class="footer_left_mail">
+          <h5>Напишите нам</h5>
+          <p><a href="mailto:{{email}}">{{email}}</a></p>
+        </div>
+      </div>
+      <div class="col-sm-4 footer_right">
+        <h5>Социальные сети</h5>
+        <div class="socials">
+          <a class="instagramm" href="https://instagram.com/alfa.svet?igshid=1nk8onqumfsw7" target="_blank"><img src="catalog/view/theme/default/img/svg/instagram-logo.svg" alt=""></a>
+        </div>
+      </div>
+      <div class="col-sm-4 footer_right">
+        <h5>Контакты</h5>
+        <div class="fcontants fcontants_g1">
+          <p class="phone"><a href="tel:{{ telephone }}">{{ telephone }}</a></p>
+          <p class="open">{{ open }}</p>
+        </div>
+        <div class="developers">
+          <a href="https://promolink.su/" target="_blank"><img src="catalog/view/theme/default/img/svg/promolink_logo.svg"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<footer class="is_pc">
+  <div class="container">
+    <div class="row min">
+      <div class="col-sm-3 footer_left">
+        <div class="footer_logo"><a href="{{home}}"><img src="catalog/view/theme/default/img/svg/logo_white.svg" /></a></div>
+        <p class="company_name">Альфа свет 2020г.</p>
+        <p class="footer_politics"><a href="{{politics}}">Политика конфиденциальности</a></p>
+        <div class="footer_left_mail">
+          <h5>Напишите нам</h5>
+          <p><a href="mailto:{{email}}">{{email}}</a></p>
+        </div>
+      </div>
+      <div class="col-sm-2 footer_center">
+        <h5>Покупателю</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{products}}">О продукции</a></li>
+          <li><a href="{{optovikam}}">Дилерам</a></li>
+          <li><a href="{{delivery}}">Доставка</a></li>
+          <li><a href="{{gorantii}}">Гарантия</a></li>
+          <li><a href="{{payment}}">Оплата</a></li>
+          <li><a href="{{proizvodstvo}}">Производство</a></li>
+          <li><a href="{{shops}}">Где купить</a></li>
+          <li><a href="{{vozvrat}}">Возврат</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-2 footer_center">
+        <h5>Общая информация</h5>
+        <ul class="list-unstyled">
+          <li><a href="{{stocks}}">Акции</a></li>
+          <li><a href="{{about_us}}">О компании</a></li>
+          <li><a href="{{news}}">Новости</a></li>
+          <li><a href="{{contact}}">Контакты</a></li>
+          <li><a href="{{kompanii}}">Для студии потолков</a></li>
+          <li><a href="{{marketing}}">Маркетинговая продукция</a></li>
+          <li><a href="{{faq}}">Поддержка (FAQ)</a></li>
+          <li><a href="{{vakancy}}">Вакансии</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-2 footer_center">
+        <h5>Каталог</h5>
+        <ul class="list-unstyled">
+          {% if categories %}
+          {% for category in categories %}
+          <li><a href="{{ category.href }}">{{ category.name }}</a></li>
+          {% endfor %}
+          {% endif %}
+        </ul>
+      </div>
+      <div class="col-sm-2 col-sm-offset-1 footer_right">
+        <h5>Социальные сети</h5>
+        <div class="socials">
+          <a class="instagramm" href="https://instagram.com/alfa.svet?igshid=1nk8onqumfsw7" target="_blank"><img src="catalog/view/theme/default/img/svg/instagram-logo.svg" alt=""></a>
+        </div>
+        <h5>Контакты</h5>
+        <div class="fcontants fcontants_g1">
+          <p class="phone"><a href="tel:{{ telephone }}">{{ telephone }}</a></p>
+          <p class="open">{{ open }}</p>
+        </div>
+        <div class="developers">
+          <a href="https://promolink.su/" target="_blank"><img src="catalog/view/theme/default/img/svg/promolink_logo.svg"></a>
+        </div>
+      </div>
+    </div>
   </div>
 </footer>
 {% for script in scripts %}
 <script src="{{ script }}" type="text/javascript"></script>
 {% endfor %}
+
 <!--
 OpenCart is open source software and you are free to remove the powered by OpenCart if you want, but its generally accepted practise to make a small donation.
 Please donate via PayPal to donate@opencart.com

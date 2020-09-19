@@ -53,4 +53,14 @@ class ModelAccountReward extends Model {
 			return 0;
 		}
 	}
+
+	public function getBonusStatus(){
+		$query = $this->db->query("SELECT bonus_status FROM `" . DB_PREFIX . "customer` WHERE customer_id = '" . (int)$this->customer->getId() . "'");
+
+		if ($query->num_rows) {
+			return $query->row['bonus_status'];
+		} else {
+			return 0;
+		}
+	}
 }

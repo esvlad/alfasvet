@@ -506,6 +506,7 @@ class ControllerSaleOrder extends Controller {
 			$data['shipping_postcode'] = $order_info['shipping_postcode'];
 			$data['shipping_country_id'] = $order_info['shipping_country_id'];
 			$data['shipping_zone_id'] = $order_info['shipping_zone_id'];
+			$data['shipping_zone'] = $order_info['shipping_zone'];
 			$data['shipping_custom_field'] = $order_info['shipping_custom_field'];
 			$data['shipping_method'] = $order_info['shipping_method'];
 			$data['shipping_code'] = $order_info['shipping_code'];
@@ -830,7 +831,28 @@ class ControllerSaleOrder extends Controller {
 			$data['telephone'] = $order_info['telephone'];
 
 			$data['shipping_method'] = $order_info['shipping_method'];
+			$data['shipping_code'] = $order_info['shipping_code'];
 			$data['payment_method'] = $order_info['payment_method'];
+
+			$data['shipping_address_1'] = $order_info['shipping_address_1'];
+			$data['shipping_address_2'] = $order_info['shipping_address_2'];
+			$data['shipping_city'] = $order_info['shipping_city'];
+			$data['shipping_postcode'] = $order_info['shipping_postcode'];
+			$data['shipping_zone'] = $order_info['shipping_zone'];
+
+			$data['user_type'] = $order_info['shipping_custom_field'][4];
+
+			if(!empty($order_info['shipping_custom_field'][1])){
+				$data['rekviz'] = $this->url->link('tool/upload/rekviz', 'code=' . $order_info['shipping_custom_field'][1] . '&user_token=' . $this->session->data['user_token']);
+			}
+
+			if(!empty($order_info['shipping_custom_field'][2])){
+				$data['inn'] = $order_info['shipping_custom_field'][2];
+			}
+
+			if(!empty($order_info['shipping_custom_field'][3])){
+				$data['shipping_address_kv'] = $order_info['shipping_custom_field'][3];
+			}
 
 			// Payment Address
 			if ($order_info['payment_address_format']) {
@@ -1657,6 +1679,7 @@ class ControllerSaleOrder extends Controller {
 					'email'            => $order_info['email'],
 					'telephone'        => $order_info['telephone'],
 					'shipping_address' => $shipping_address,
+					'shipping_address_format' => $format,
 					'shipping_method'  => $order_info['shipping_method'],
 					'payment_address'  => $payment_address,
 					'payment_method'   => $order_info['payment_method'],

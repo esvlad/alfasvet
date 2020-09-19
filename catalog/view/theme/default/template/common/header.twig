@@ -9,7 +9,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>{{ title }}</title>
+<title>{{ title }} | Светодиодные светильники и комплектующие | Производственная компания «Альфа свет»</title>
 <base href="{{ base }}" />
 {% if description %}
 <meta name="description" content="{{ description }}" />
@@ -21,8 +21,7 @@
 <link href="catalog/view/javascript/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
 <script src="catalog/view/javascript/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <link href="catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-<link href="//fonts.googleapis.com/css?family=Open+Sans:400,400i,300,700" rel="stylesheet" type="text/css" />
-<link href="catalog/view/theme/default/stylesheet/stylesheet.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 {% for style in styles %}
 <link href="{{ style.href }}" type="text/css" rel="{{ style.rel }}" media="{{ style.media }}" />
 {% endfor %}
@@ -33,49 +32,346 @@
 {% for link in links %}
 <link href="{{ link.href }}" rel="{{ link.rel }}" />
 {% endfor %}
+<link href="catalog/view/theme/default/stylesheet/alfasvet.css" rel="stylesheet">
 {% for analytic in analytics %}
 {{ analytic }}
 {% endfor %}
 </head>
-<body>
-<nav id="top">
-  <div class="container">{{ currency }}
-    {{ language }}
-    <div id="top-links" class="nav pull-right">
+<body class="{{class}}">
+<input type="hidden" name="title_page" value="{{ title }}">
+<div class="modal fade" id="auth" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _auth">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_auth_block clearfix">
+            <div class="modal_auth">
+              <h2>Войти</h2>
+              <form action="{{ action_login }}" id="autorization" class="form-horizontal" method="post" autocomplete="off">
+                <div class="form_block">
+                  <div class="form-group">
+                    <label for="" class="control-label">E-mail*</label>
+                    <input class="form-control" type="email" name="email" value="">
+                  </div>
+                  <div class="form-group">
+                    <label for="" class="control-label">Пароль*</label>
+                    <input class="form-control" type="password" name="password" value="">
+                  </div>
+                  <div class="form-group">
+                    <div id="auth_login" data-loading-text="..." class="btn_black"><span>Войти</span></div>
+                    <!--<p>Нажимая на кнопку, вы соглашаетесь с условиями <a href="http://alfa.promolink.su/privacy">политики конфиденциальности и обработки персональных данных</a></p>-->
+                    <p><span id="reset_password">Забыли пароль?</span></p>
+                  </div>
+                </div>
+              </form>
+              <div class="login_socials">
+                <h3>Войти с помощью</h3>
+                <div class="login_socials_buttons">
+                  <span class="social_icons vk" onclick="auth_social('vk');"></span>
+                  <span class="social_icons fb" onclick="auth_social('fb');"></span>
+                  <span class="social_icons ok" onclick="auth_social('ok');"></span>
+                  <span class="social_icons gg" onclick="auth_social('gg');"></span>
+                </div>
+              </div>
+            </div>
+            <div class="modal_register">
+              <h2>Регистрация</h2>
+              <form action="{{ action_register }}" id="registration" class="form-horizontal" method="post" enctype="multipart/form-data">
+                <div class="form_block clearfix">
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group required">
+                      <label for="input-firstname" class="control-label">Имя*</label>
+                      <input id="input-firstname" type="text" class="form-control" name="firstname" value="">
+                    </div>
+                    <div class="form-group required">
+                      <label for="input-email" class="control-label">E-mail*</label>
+                      <input id="input-email" type="email" class="form-control" name="email" value="">
+                    </div>
+                    <div class="form-group required">
+                      <label for="input-telephone" class="control-label">Номер телефона*</label>
+                      <input id="input-telephone" type="tel" class="form-control" name="telephone" value="">
+                    </div>
+                    <div class="form-group required">
+                      <label for="" class="control-label">Пароль*</label>
+                      <input type="password" class="form-control" name="password" value="">
+                    </div>
+                    <div class="form-group required">
+                      <label for="" class="control-label">Повторите пароль*</label>
+                      <input type="password" class="form-control" name="confirm" value="">
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12">
+                    <div class="form-group required">
+                      <label class="control-label" for="user_type">&nbsp;</label>
+                      <div class="row min switcher">
+                        <div class="col-xs-6 active" data-switch="1">физ. лицо</div>
+                        <div class="col-xs-6" data-switch="2">компания</div>
+                      </div>
+                      <input type="hidden" name="custom_field[account][4]" value="1">
+                    </div>
+                    <div class="form-group _usercomp opacity30">
+                      <label class="control-label" for="input-custom-field2">ИНН</label>
+                      <input type="text" name="custom_field[account][2]" value="" id="input-custom-field2" class="form-control" disabled />
+                    </div>
+                    <div class="form-group _usercomp opacity30">
+                      <label class="control-label" for="input-custom-field1">Загрузить реквизиты компании</label>
+                      <div class="input_file_reg disabled">
+                        <div id="fountainG" class="loading">
+                          <div id="fountainG_1" class="fountainG"></div>
+                          <div id="fountainG_2" class="fountainG"></div>
+                          <div id="fountainG_3" class="fountainG"></div>
+                          <div id="fountainG_4" class="fountainG"></div>
+                          <div id="fountainG_5" class="fountainG"></div>
+                          <div id="fountainG_6" class="fountainG"></div>
+                          <div id="fountainG_7" class="fountainG"></div>
+                          <div id="fountainG_8" class="fountainG"></div>
+                        </div>
+                        <span>Выбрать</span>
+                      </div>
+                      <input type="hidden" name="custom_field[account][1]" value="" id="input-custom-field1"/>
+                    </div>
+                  </div>
+                  <div style="clear:both;"></div>
+                  <div class="form-group form_btn">
+                    <div id="auth_registration" data-loading-text="..." class="btn_gold">Регистрация</div>
+                    <p>Нажимая на кнопку, вы соглашаетесь с условиями <a href="http://alfa.promolink.su/privacy">политики конфиденциальности и обработки персональных данных</a></p>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="modal-dialog _reset hidden">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+          <div class="modal_auth_block clearfix">
+            <div class="modal_auth">
+              <h2>Восстановление пароля</h2>
+              <form action="#" id="resetpass" class="form-horizontal" method="post" autocomplete="off">
+                <div class="form_block">
+                  <div class="form-group">
+                    <label for="" class="control-label">Введите свой e-mail*</label>
+                    <input class="form-control" type="email" name="email" value="">
+                  </div>
+                  <div class="form-group">
+                    <div id="reset_password" class="btn_black"><span>Восстановить</span></div>
+                  </div>
+                </div>
+                <div class="form_success hidden">
+                  <p>На вашу почту отправлен новый пароль.</p>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</div>
+<nav id="top" class="mobile">
+  <div class="container">
+    <div id="top-links" class="nav">
       <ul class="list-inline">
-        <li><a href="{{ contact }}"><i class="fa fa-phone"></i></a> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span></li>
-        <li class="dropdown"><a href="{{ account }}" title="{{ text_account }}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_account }}</span> <span class="caret"></span></a>
-          <ul class="dropdown-menu dropdown-menu-right">
-            {% if logged %}
-            <li><a href="{{ account }}">{{ text_account }}</a></li>
-            <li><a href="{{ order }}">{{ text_order }}</a></li>
-            <li><a href="{{ transaction }}">{{ text_transaction }}</a></li>
-            <li><a href="{{ download }}">{{ text_download }}</a></li>
-            <li><a href="{{ logout }}">{{ text_logout }}</a></li>
-            {% else %}
-            <li><a href="{{ register }}">{{ text_register }}</a></li>
-            <li><a href="{{ login }}">{{ text_login }}</a></li>
-            {% endif %}
+        <li>
+          <div id="logo"><a href="{{ home }}"><img src="catalog/view/theme/default/img/svg/logo.svg" alt="{{ name }}" title="{{ name }}"></a></div>
+        </li>
+        <li class="mmenu _right">
+          <span class="_menu">
+            <div class="burger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </span>
+        </li>
+        <li class="header_auth_cart _cart_header _right" data-count="{{count_cart}}"><a href="{{ shopping_cart }}"><img src="catalog/view/theme/default/img/svg/shopping-bag.svg" alt="" class="img-responsive"></a></li>
+      </ul>
+    </div>
+    <div class="slide_up_menu">
+      <div class="mmenu_group">
+        <div class="mmenu_slideups mmenu_title mmenu_border">
+          <h2>Каталог<span class="slide_arrow"></span></h2>
+          <div class="mmenu_toogle_slideups">
+          {{mobile_menu}}
+          </div>
+        </div>
+      </div>
+      <div class="mmenu_group">
+        <div class="mmenu_slideups mmenu_title mmenu_border">
+          <h2>Остальное<span class="slide_arrow"></span></h2>
+          <div class="mmenu_toogle_slideups">
+          <div class="mmenu_slideups_child mmenu_border">
+              <h3><a href="{{about_us}}">О компании</a><span class="slide_arrow"></span></h3>
+              <div class="mmenu_toogle_slideups_child" style="display: none;">
+                <h4><a href="{{delivery}}">Доставка</a></h4>
+                <h4><a href="{{payment}}">Оплата</a></h4>
+                <h4><a href="{{vozvrat}}">Возврат</a></h4>
+                <h4><a href="{{gorantii}}">Гарантия</a></h4>
+                <h4><a href="{{proizvodstvo}}">Производство</a></h4>
+              </div>
+            </div>
+            <div class="mmenu_slideups_child mmenu_border">
+              <h3><a>Сотрудничество</a><span class="slide_arrow"></span></h3>
+              <div class="mmenu_toogle_slideups_child" style="display: none;">
+                <h4><a href="{{kompanii}}">Потолочным компаниям</a></h4>
+                <h4><a href="{{marketing}}">Маркетинговая продукция</a></h4>
+                <h4><a href="{{vakancy}}">Вакансии</a></h4>
+                <h4><a href="{{optovikam}}">Дилерам</a></h4>
+              </div>
+            </div>
+            <div class="mmenu_slideups_child mmenu_border">
+              <h3><a>Покупателю</a><span class="slide_arrow"></span></h3>
+              <div class="mmenu_toogle_slideups_child" style="display: none;">
+                <h4><a href="{{products}}">О продукции</a></h4>
+                <h4><a href="{{shops}}">Где купить</a></h4>
+              </div>
+            </div>
+            <div class="mmenu_slideups_child mmenu_border">
+              <h3><a>Общая информация</a><span class="slide_arrow"></span></h3>
+              <div class="mmenu_toogle_slideups_child" style="display: none;">
+                <h4><a href="{{stocks}}">Акции</a></h4>
+                <h4><a href="{{news}}">Новости</a></h4>
+                <h4><a href="{{faq}}">Поддержка (FAQ)</a></h4>
+                <h4><a href="{{vakancy}}">Вакансии</a></h4>
+              </div>
+            </div>
+            <div class="mmenu_slideups_child mmenu_border">
+              <h3><a href="{{contact}}">Контакты</a></h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mmenu_group _phone">
+        <p>{{ telephone }}</p>
+        <p>{{ open }}</p>
+      </div>
+      <div class="mmenu_group _other">
+        <div class="mmenu_linked mmenu_border">
+          <p><a href="{{ wishlist }}" target="_self"><img src="catalog/view/theme/default/img/svg/valentines-heart___.svg" alt=""><span>Избранное</span></a></p>
+        </div>
+        <div class="mmenu_linked mmenu_border">
+          {% if customer == 0 %}
+          <p><a href="#" data-toggle="modal" data-target="#auth"><img src="catalog/view/theme/default/img/svg/user.svg" alt=""><span>Войти</span></a></p>
+          {% else %}
+          <p><a href="{{ account }}" target="_self"><img src="catalog/view/theme/default/img/svg/user.svg" alt=""><span>{{customer_name}}</span></a></p>
+          {% endif %}
+        </div>
+        <div class="mmenu_linked mmenu_border">
+          <div id="search" class="">
+            <form action="{{search_action}}" method="get">
+              <img src="catalog/view/theme/default/img/svg/search.svg" alt="">
+              <input type="text" name="search" value="" placeholder="Поиск" class="my_search" autocomplete="off" />
+              <div class="search_result">
+                <div class="search_result_list"></div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<nav id="top" class="not_mobile">
+  <div class="container">
+    <div id="top-links" class="nav">
+      <ul class="list-inline">
+        <li>
+          <div id="logo">
+              <a href="{{ home }}"><img src="catalog/view/theme/default/img/svg/logo.svg" title="{{ name }}" alt="{{ name }}" class="" /></a>
+            </div>
+        </li>
+        <li class="dropdown">
+          <a href="{{about_us}}" class="dropdown-toggle" data-toggle="dropdown">О компании</a>
+          <ul class="dropdown-menu dropdown-menu-left info_menu">
+            <li><a href="{{delivery}}" target="_self">Доставка</a></li>
+            <li><a href="{{payment}}" target="_self">Оплата</a></li>
+            <li><a href="{{vozvrat}}" target="_self">Возврат</a></li>
+            <li><a href="{{gorantii}}" target="_self">Гарантия</a></li>
+            <li><a href="{{proizvodstvo}}" target="_self">Производство</a></li>
           </ul>
         </li>
-        <li><a href="{{ wishlist }}" id="wishlist-total" title="{{ text_wishlist }}"><i class="fa fa-heart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_wishlist }}</span></a></li>
-        <li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_shopping_cart }}</span></a></li>
-        <li><a href="{{ checkout }}" title="{{ text_checkout }}"><i class="fa fa-share"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_checkout }}</span></a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Сотрудничество</a>
+          <ul class="dropdown-menu dropdown-menu-left info_menu">
+            <li><a href="{{kompanii}}" target="_self">Потолочным компаниям</a></li>
+            <li><a href="{{marketing}}" target="_self">Маркетинговая продукция</a></li>
+            <li><a href="{{vakancy}}" target="_self">Вакансии</a></li>
+            <li><a href="{{optovikam}}" target="_self">Дилерам</a></li>
+          </ul>
+        </li>
+        <li><a href="{{contact}}" target="_self">Контакты</a></li>
+        <li class="mmenu">
+          <span class="_menu">
+            <div class="burger">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <span>Меню</span>
+          </span>
+        </li>
+        <li class="header_auth_cart _cart_header _right" data-count="{{count_cart}}"><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><img class="img-responsive" src="catalog/view/theme/default/img/svg/shopping-bag.svg" /><span>Корзина</span></a></li>
+        <li class="header_auth_cart _right">
+        {% if customer == 0 %}
+        <a href="#" data-toggle="modal" data-target="#auth"><img class="img-responsive" src="catalog/view/theme/default/img/svg/user.svg" />Войти</a>
+        {% else %}
+        <a href="{{ account }}"><img class="img-responsive" src="catalog/view/theme/default/img/svg/user.svg" />{{customer_name}}</a>
+        {% endif %}
+        </li>
+        <li class="header_auth_cart _right"><a href="{{ wishlist }}"><img class="img-responsive" src="catalog/view/theme/default/img/svg/valentines-heart___.svg" /><span>Избранное</span></a></li>
+        <li class="header_contact _right">
+          <p class="contact_head">{{ telephone }}</p>
+          <p class="contact_head_open">{{ open }}</p>
+        </li>
       </ul>
     </div>
   </div>
 </nav>
-<header>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-4">
-        <div id="logo">{% if logo %}<a href="{{ home }}"><img src="{{ logo }}" title="{{ name }}" alt="{{ name }}" class="img-responsive" /></a>{% else %}
-          <h1><a href="{{ home }}">{{ name }}</a></h1>
-          {% endif %}</div>
+<div class="all_menu not_mobile">
+  <div class="rowmin">
+    <div class="col-sm-4 col-xs-12 footer_center">
+      <h5>Покупателю</h5>
+      <ul class="list-unstyled">
+        <li><a href="{{products}}">О продукции</a></li>
+        <li><a href="{{optovikam}}">Дилерам</a></li>
+        <li><a href="{{delivery}}">Доставка</a></li>
+        <li><a href="{{gorantii}}">Гарантия</a></li>
+        <li><a href="{{payment}}">Оплата</a></li>
+        <li><a href="{{proizvodstvo}}">Производство</a></li>
+        <li><a href="{{shops}}">Где купить</a></li>
+        <li><a href="{{vozvrat}}">Возврат</a></li>
+      </ul>
+    </div>
+    <div class="col-sm-4 col-xs-12 footer_center">
+      <h5>Общая информация</h5>
+      <ul class="list-unstyled">
+        <li><a href="{{stocks}}">Акции</a></li>
+        <li><a href="{{about_us}}">О компании</a></li>
+        <li><a href="{{news}}">Новости</a></li>
+        <li><a href="{{contact}}">Контакты</a></li>
+        <li><a href="{{kompanii}}">Потолочным компаниям</a></li>
+        <li><a href="{{marketing}}">Маркетинговая продукция</a></li>
+        <li><a href="{{faq}}">Поддержка (FAQ)</a></li>
+        <li><a href="{{vakancy}}">Вакансии</a></li>
+      </ul>
+    </div>
+    <div class="col-lg-3 col-lg-offset-1 col-sm-4 col-xs-12 footer_right">
+      <h5>Социальные сети</h5>
+      <div class="socials">
+        <a class="instagramm" href="https://instagram.com/alfa.svet?igshid=1nk8onqumfsw7" target="_blank"><img src="catalog/view/theme/default/img/svg/instagram-logo.svg" alt=""></a>
       </div>
-      <div class="col-sm-5">{{ search }}</div>
-      <div class="col-sm-3">{{ cart }}</div>
+      <h5>Контакты</h5>
+      <div class="fcontants fcontants_g1">
+        <p class="phone"><a href="tel:{{ telephone }}">{{ telephone }}</a></p>
+        <p class="open">{{ open }}</p>
+      </div>
+      <h5>Напишите нам</h5>
+      <div class="fcontants fcontants_g2">
+        <p class="mail"><a href="mailto:{{email}}">{{email}}</a></p>
+      </div>
     </div>
   </div>
-</header>
+</div>
 {{ menu }}

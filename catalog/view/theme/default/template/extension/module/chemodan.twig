@@ -1,0 +1,53 @@
+<div class="featured ch_featured">
+  <div class="product_list ch_list swiper-container">
+   <div class="swiper-wrapper"> 
+   {% set p = 0 %}
+   {% for product in products %}
+    <div class="swiper-slide product-layout product_list_item">
+      <span class="stock">7 шт.</span>
+      <div class="product-thumb transition product_list_item_padding">
+        <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
+        <div class="caption">
+          <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+          <div class="caption_parameters">
+            {% if product.attributes %}
+            {% for attribute in product.attributes %}
+            <span class="attribute" data-attributes="{{attribute.attribute_id}}">{{attribute.text}}</span>
+            {% endfor %}
+            {% endif %}
+          </div>
+          <div class="instock_wishlist">
+            <div class="instock_block"><span class="instock">В наличии</span></div>
+            <div class="wishlist_block"><span class="wishlist" onclick="wishlist.add('{{ product.product_id }}');">В избранное</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% set p = p + 1 %}
+    {% endfor %}
+    </div>
+  </div>
+  <span class="arrows_left ch_featured_left"></span>
+  <span class="arrows_right ch_featured_right"></span>
+</div>
+<script type="text/javascript">
+  $('.ch_list').swiper({
+    mode: 'horizontal',
+    slidesPerView: 3,
+    spaceBetween: 20,
+    paginationClickable: true,
+    nextButton: '.ch_featured_right',
+    prevButton: '.ch_featured_left',
+    loop: true,
+    breakpoints: {
+      640: {
+          slidesPerView: 1
+      },
+      800: {
+          slidesPerView: 2
+      }
+    }
+  });
+
+$('#chemodanModal').removeAttr('style');
+</script>

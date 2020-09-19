@@ -1,0 +1,18 @@
+{{ header }}
+<div id="news_list" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>{{ heading_title }}</h2>
+  <div class="news_content">
+	{% if image %} 
+	<img src="{{ image }}" alt="{{ heading_title }}" />
+	{% endif %} 
+	<div class="news_description">{{ description }}</div>
+	<div class="newslist"><a href="{{newslist}}" class="abtn news_prev"><span>Назад</span></a></div>
+  </div>
+</div>
+
+{{ footer }} 

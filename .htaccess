@@ -4,6 +4,10 @@
 
 # For any support issues please visit: http://www.opencart.com
 
+RewriteEngine On
+RewriteCond %{HTTP_HOST} alfasvet.es-vlad.ru
+RewriteRule (.*) http://alfa.promolink.su/$1 [R=301,L]
+
 Options +FollowSymlinks
 
 # Prevent Directoy listing
@@ -54,3 +58,5 @@ RewriteRule ^([^?]*) index.php?_route_=$1 [L,QSA]
 
 # 7. disable open_basedir limitations
 # php_admin_value open_basedir none
+
+Header set Access-Control-Allow-Origin: *

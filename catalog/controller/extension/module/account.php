@@ -3,6 +3,9 @@ class ControllerExtensionModuleAccount extends Controller {
 	public function index() {
 		$this->load->language('extension/module/account');
 
+		$this->load->model('account/order');
+		$data['order_total'] = $this->model_account_order->getTotalOrders();
+
 		$data['logged'] = $this->customer->isLogged();
 		$data['register'] = $this->url->link('account/register', '', true);
 		$data['login'] = $this->url->link('account/login', '', true);

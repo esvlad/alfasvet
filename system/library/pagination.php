@@ -14,7 +14,7 @@ class Pagination {
 	public $total = 0;
 	public $page = 1;
 	public $limit = 20;
-	public $num_links = 8;
+	public $num_links = 4;
 	public $url = '';
 	public $text_first = '|&lt;';
 	public $text_last = '&gt;|';
@@ -49,13 +49,14 @@ class Pagination {
 		$output = '<ul class="pagination">';
 
 		if ($page > 1) {
-			$output .= '<li><a href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_first . '</a></li>';
+			/*$output .= '<li><a href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_first . '</a></li>';*/
 			
-			if ($page - 1 === 1) {
-				$output .= '<li><a href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $this->text_prev . '</a></li>';
+			/*if ($page - 1 === 1) {
+				$output .= '<li><a class="prev" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '"><span>Назад</span></a></li>';
 			} else {
-				$output .= '<li><a href="' . str_replace('{page}', $page - 1, $this->url) . '">' . $this->text_prev . '</a></li>';
-			}
+				$output .= '<li><a class="prev" href="' . str_replace('{page}', $page - 1, $this->url) . '"><span>Назад</span></a></li>';
+			}*/
+			$output .= '<li><a class="prev" href="' . str_replace('{page}', $page - 1, $this->url) . '"><span>Назад</span></a></li>';
 		}
 
 		if ($num_pages > 1) {
@@ -63,11 +64,16 @@ class Pagination {
 				$start = 1;
 				$end = $num_pages;
 			} else {
-				$start = $page - floor($num_links / 2);
+				if($page == 1){
+					$start = $page - floor($num_links / 2);
+				} else {
+					$start = $page - floor($num_links / 2) + 1;
+				}
+				
 				$end = $page + floor($num_links / 2);
 
 				if ($start < 1) {
-					$end += abs($start) + 1;
+					$end += abs($start);
 					$start = 1;
 				}
 
@@ -81,18 +87,19 @@ class Pagination {
 				if ($page == $i) {
 					$output .= '<li class="active"><span>' . $i . '</span></li>';
 				} else {
-					if ($i === 1) {
-						$output .= '<li><a href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $i . '</a></li>';
+					/*if ($i === 1) {
+						$output .= '<li><a class="number" href="' . str_replace(array('&amp;page={page}', '?page={page}', '&page={page}'), '', $this->url) . '">' . $i . '</a></li>';
 					} else {
-						$output .= '<li><a href="' . str_replace('{page}', $i, $this->url) . '">' . $i . '</a></li>';
-					}
+						$output .= '<li><a class="number" href="' . str_replace('{page}', $i, $this->url) . '">' . $i . '</a></li>';
+					}*/
+					$output .= '<li><a class="number" href="' . str_replace('{page}', $i, $this->url) . '">' . $i . '</a></li>';
 				}
 			}
 		}
 
 		if ($page < $num_pages) {
-			$output .= '<li><a href="' . str_replace('{page}', $page + 1, $this->url) . '">' . $this->text_next . '</a></li>';
-			$output .= '<li><a href="' . str_replace('{page}', $num_pages, $this->url) . '">' . $this->text_last . '</a></li>';
+			$output .= '<li><a class="next" href="' . str_replace('{page}', $page + 1, $this->url) . '"><span>Вперед</span></a></li>';
+			/*$output .= '<li><a href="' . str_replace('{page}', $num_pages, $this->url) . '">' . $this->text_last . '</a></li>';*/
 		}
 
 		$output .= '</ul>';

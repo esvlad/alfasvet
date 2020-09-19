@@ -4,17 +4,20 @@ class ControllerCheckoutCart extends Controller {
 		$this->load->language('checkout/cart');
 
 		$this->document->setTitle($this->language->get('heading_title'));
+		$this->document->addStyle('catalog/view/javascript/jquery/ui/jquery-ui.min.css');
+		$this->document->addScript('catalog/view/javascript/jquery/ui/jquery-ui.min.js');
+		$this->document->addScript('catalog/view/javascript/jquery/ui/jquery.ui.touch-punch.min.js');
 
 		$data['breadcrumbs'] = array();
 
 		$data['breadcrumbs'][] = array(
-			'href' => $this->url->link('common/home'),
-			'text' => $this->language->get('text_home')
+			'text' => 'Главная',
+			'href' => $this->url->link('common/home')
 		);
 
 		$data['breadcrumbs'][] = array(
 			'href' => $this->url->link('checkout/cart'),
-			'text' => $this->language->get('heading_title')
+			'text' => 'Корзина'
 		);
 
 		if ($this->cart->hasProducts() || !empty($this->session->data['vouchers'])) {
@@ -53,6 +56,12 @@ class ControllerCheckoutCart extends Controller {
 			$this->load->model('tool/image');
 			$this->load->model('tool/upload');
 
+			$mb_detected = new MobileDetect;
+			if($mb_detected->isMobile() && !$mb_detected->isTablet()){
+				$data['mobile'] = 1;
+				$mobile = true;
+			}
+
 			$data['products'] = array();
 
 			$products = $this->cart->getProducts();
@@ -71,7 +80,7 @@ class ControllerCheckoutCart extends Controller {
 				}
 
 				if ($product['image']) {
-					$image = $this->model_tool_image->resize($product['image'], $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_width'), $this->config->get('theme_' . $this->config->get('config_theme') . '_image_cart_height'));
+					$image = $this->model_tool_image->resize($product['image'], 120, 107);
 				} else {
 					$image = '';
 				}
@@ -139,7 +148,8 @@ class ControllerCheckoutCart extends Controller {
 					'recurring' => $recurring,
 					'quantity'  => $product['quantity'],
 					'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
-					'reward'    => ($product['reward'] ? sprintf($this->language->get('text_points'), $product['reward']) : ''),
+					'reward'    => (isset($product['reward']) ? $product['reward'] : 0),
+					'maximum'	=> (isset($product['maximum']) ? $product['maximum'] : 99),
 					'price'     => $price,
 					'total'     => $total,
 					'href'      => $this->url->link('product/product', 'product_id=' . $product['product_id'])
@@ -204,13 +214,45 @@ class ControllerCheckoutCart extends Controller {
 				array_multisort($sort_order, SORT_ASC, $totals);
 			}
 
+			if (!$this->customer->isLogged()){
+				$data['customer'] = 0;
+				$data['reward_pay'] = 0;
+			} else {
+				$data['customer'] = 1;
+				$data['customer_id'] = $this->customer->getId();
+
+				$points = $this->customer->getRewardPoints();
+
+				if (isset($this->session->data['reward'])){
+					$data['reward'] = $this->session->data['reward'];
+				} else {
+					$data['reward'] = $points;
+				}
+
+				if(!isset($data['reward'])) $data['reward'] = 0;
+
+				if (isset($this->session->data['reward_pay'])){
+					$data['reward_pay'] = $this->session->data['reward_pay'];
+				} else {
+					$data['reward_pay'] = 0;
+				}
+			}
+
 			$data['totals'] = array();
+
 
 			foreach ($totals as $total) {
 				$data['totals'][] = array(
 					'title' => $total['title'],
 					'text'  => $this->currency->format($total['value'], $this->session->data['currency'])
 				);
+
+				$data['total'] = $total['value'];
+				$data['all_total'] = $this->currency->format($total['value'], $this->session->data['currency']);
+			}
+
+			if($data['reward_pay'] > 0){
+				$data['all_total'] = $this->currency->format(($data['total'] - $data['reward_pay']), $this->session->data['currency']);
 			}
 
 			$data['continue'] = $this->url->link('common/home');
@@ -232,6 +274,14 @@ class ControllerCheckoutCart extends Controller {
 					}
 				}
 			}
+
+			if(isset($this->request->get['step'])){
+				$data['step'] = $this->request->get['step'];
+			}
+
+			$data['total'] = $this->currency->format($data['total'], $this->session->data['currency']);
+
+			$data['politics'] = $this->url->link('information/information', 'information_id=3');
 
 			$data['column_left'] = $this->load->controller('common/column_left');
 			$data['column_right'] = $this->load->controller('common/column_right');
@@ -289,9 +339,15 @@ class ControllerCheckoutCart extends Controller {
 
 			$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
 
-			foreach ($product_options as $product_option) {
-				if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
-					$json['error']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+			if(empty($option)){
+				foreach ($product_options as $product_option) {
+					if(count((array)$product_option['product_option_value']) > 1){
+						$json['error']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+					} else {
+						foreach ($product_option['product_option_value'] as $option_value){
+							$option[$product_option['product_option_id']] = $option_value['product_option_value_id'];
+						}
+					}
 				}
 			}
 
@@ -371,10 +427,13 @@ class ControllerCheckoutCart extends Controller {
 				}
 
 				$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
+				$json['success'] = true;
 			} else {
 				$json['redirect'] = str_replace('&amp;', '&', $this->url->link('product/product', 'product_id=' . $this->request->post['product_id']));
 			}
 		}
+
+		$json['count_cart'] = $this->cart->countProducts();
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
@@ -386,20 +445,127 @@ class ControllerCheckoutCart extends Controller {
 		$json = array();
 
 		// Update
-		if (!empty($this->request->post['quantity'])) {
-			foreach ($this->request->post['quantity'] as $key => $value) {
-				$this->cart->update($key, $value);
+		if (!empty($this->request->post['quantity']) && !empty($this->request->post['cart_id'])) {
+			$this->cart->update((int)$this->request->post['cart_id'], (int)$this->request->post['quantity']);
+
+			if ($this->cart->hasProducts()) {
+				$data['products'] = array();
+
+				$products = $this->cart->getProducts();
+
+				foreach ($products as $product) {
+					$product_total = 0;
+
+					foreach ($products as $product_2) {
+						if ($product_2['product_id'] == $product['product_id']) {
+							$product_total += $product_2['quantity'];
+						}
+					}
+
+					// Display prices
+					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+						$unit_price = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
+						
+						$price = $this->currency->format($unit_price, $this->session->data['currency']);
+						$total = $this->currency->format($unit_price * $product['quantity'], $this->session->data['currency']);
+					} else {
+						$price = false;
+						$total = false;
+					}
+
+					$recurring = '';
+
+					if ($product['recurring']) {
+						$frequencies = array(
+							'day'        => $this->language->get('text_day'),
+							'week'       => $this->language->get('text_week'),
+							'semi_month' => $this->language->get('text_semi_month'),
+							'month'      => $this->language->get('text_month'),
+							'year'       => $this->language->get('text_year')
+						);
+
+						if ($product['recurring']['trial']) {
+							$recurring = sprintf($this->language->get('text_trial_description'), $this->currency->format($this->tax->calculate($product['recurring']['trial_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['trial_cycle'], $frequencies[$product['recurring']['trial_frequency']], $product['recurring']['trial_duration']) . ' ';
+						}
+
+						if ($product['recurring']['duration']) {
+							$recurring .= sprintf($this->language->get('text_payment_description'), $this->currency->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
+						} else {
+							$recurring .= sprintf($this->language->get('text_payment_cancel'), $this->currency->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
+						}
+					}
+
+					$data['products'][] = array(
+						'cart_id'   => $product['cart_id'],
+						'recurring' => $recurring,
+						'quantity'  => $product['quantity'],
+						'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
+						'reward'    => ($product['reward'] ? $product['reward'] : ''),
+						'price'     => $price,
+						'total'     => $total
+					);
+				}
+
+				// Totals
+				$this->load->model('setting/extension');
+
+				$totals = array();
+				$taxes = $this->cart->getTaxes();
+				$total = 0;
+				
+				// Because __call can not keep var references so we put them into an array. 			
+				$total_data = array(
+					'totals' => &$totals,
+					'taxes'  => &$taxes,
+					'total'  => &$total
+				);
+				
+				// Display prices
+				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+					$sort_order = array();
+
+					$results = $this->model_setting_extension->getExtensions('total');
+
+					foreach ($results as $key => $value) {
+						$sort_order[$key] = $this->config->get('total_' . $value['code'] . '_sort_order');
+					}
+
+					array_multisort($sort_order, SORT_ASC, $results);
+
+					foreach ($results as $result) {
+						if ($this->config->get('total_' . $result['code'] . '_status')) {
+							$this->load->model('extension/total/' . $result['code']);
+							
+							// We have to put the totals in an array so that they pass by reference.
+							$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+						}
+					}
+
+					$sort_order = array();
+
+					foreach ($totals as $key => $value) {
+						$sort_order[$key] = $value['sort_order'];
+					}
+
+					array_multisort($sort_order, SORT_ASC, $totals);
+				}
+
+				$data['totals'] = array();
+
+
+				foreach ($totals as $total) {
+					$data['totals'][] = array(
+						'title' => $total['title'],
+						'text'  => $this->currency->format($total['value'], $this->session->data['currency'])
+					);
+
+					$data['total'] = $total['value'];
+				}
+
+				$data['count_cart'] = $this->cart->countProducts();
+
+				$json = $data;
 			}
-
-			$this->session->data['success'] = $this->language->get('text_remove');
-
-			unset($this->session->data['shipping_method']);
-			unset($this->session->data['shipping_methods']);
-			unset($this->session->data['payment_method']);
-			unset($this->session->data['payment_methods']);
-			unset($this->session->data['reward']);
-
-			$this->response->redirect($this->url->link('checkout/cart'));
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -415,61 +581,128 @@ class ControllerCheckoutCart extends Controller {
 		if (isset($this->request->post['key'])) {
 			$this->cart->remove($this->request->post['key']);
 
-			unset($this->session->data['vouchers'][$this->request->post['key']]);
+			if ($this->cart->hasProducts()) {
 
-			$json['success'] = $this->language->get('text_remove');
+				$data['products'] = array();
 
-			unset($this->session->data['shipping_method']);
-			unset($this->session->data['shipping_methods']);
-			unset($this->session->data['payment_method']);
-			unset($this->session->data['payment_methods']);
-			unset($this->session->data['reward']);
+				$products = $this->cart->getProducts();
 
-			// Totals
-			$this->load->model('setting/extension');
+				foreach ($products as $product) {
+					$product_total = 0;
 
-			$totals = array();
-			$taxes = $this->cart->getTaxes();
-			$total = 0;
-
-			// Because __call can not keep var references so we put them into an array. 			
-			$total_data = array(
-				'totals' => &$totals,
-				'taxes'  => &$taxes,
-				'total'  => &$total
-			);
-
-			// Display prices
-			if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
-				$sort_order = array();
-
-				$results = $this->model_setting_extension->getExtensions('total');
-
-				foreach ($results as $key => $value) {
-					$sort_order[$key] = $this->config->get('total_' . $value['code'] . '_sort_order');
-				}
-
-				array_multisort($sort_order, SORT_ASC, $results);
-
-				foreach ($results as $result) {
-					if ($this->config->get('total_' . $result['code'] . '_status')) {
-						$this->load->model('extension/total/' . $result['code']);
-
-						// We have to put the totals in an array so that they pass by reference.
-						$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+					foreach ($products as $product_2) {
+						if ($product_2['product_id'] == $product['product_id']) {
+							$product_total += $product_2['quantity'];
+						}
 					}
+
+					// Display prices
+					if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+						$unit_price = $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax'));
+						
+						$price = $this->currency->format($unit_price, $this->session->data['currency']);
+						$total = $this->currency->format($unit_price * $product['quantity'], $this->session->data['currency']);
+					} else {
+						$price = false;
+						$total = false;
+					}
+
+					$recurring = '';
+
+					if ($product['recurring']) {
+						$frequencies = array(
+							'day'        => $this->language->get('text_day'),
+							'week'       => $this->language->get('text_week'),
+							'semi_month' => $this->language->get('text_semi_month'),
+							'month'      => $this->language->get('text_month'),
+							'year'       => $this->language->get('text_year')
+						);
+
+						if ($product['recurring']['trial']) {
+							$recurring = sprintf($this->language->get('text_trial_description'), $this->currency->format($this->tax->calculate($product['recurring']['trial_price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['trial_cycle'], $frequencies[$product['recurring']['trial_frequency']], $product['recurring']['trial_duration']) . ' ';
+						}
+
+						if ($product['recurring']['duration']) {
+							$recurring .= sprintf($this->language->get('text_payment_description'), $this->currency->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
+						} else {
+							$recurring .= sprintf($this->language->get('text_payment_cancel'), $this->currency->format($this->tax->calculate($product['recurring']['price'] * $product['quantity'], $product['tax_class_id'], $this->config->get('config_tax')), $this->session->data['currency']), $product['recurring']['cycle'], $frequencies[$product['recurring']['frequency']], $product['recurring']['duration']);
+						}
+					}
+
+					$data['products'][] = array(
+						'cart_id'   => $product['cart_id'],
+						'recurring' => $recurring,
+						'quantity'  => $product['quantity'],
+						'stock'     => $product['stock'] ? true : !(!$this->config->get('config_stock_checkout') || $this->config->get('config_stock_warning')),
+						'reward'    => ($product['reward'] ? $product['reward'] : ''),
+						'price'     => $price,
+						'total'     => $total
+					);
 				}
 
-				$sort_order = array();
+				// Totals
+				$this->load->model('setting/extension');
 
-				foreach ($totals as $key => $value) {
-					$sort_order[$key] = $value['sort_order'];
+				$totals = array();
+				$taxes = $this->cart->getTaxes();
+				$total = 0;
+				
+				// Because __call can not keep var references so we put them into an array. 			
+				$total_data = array(
+					'totals' => &$totals,
+					'taxes'  => &$taxes,
+					'total'  => &$total
+				);
+				
+				// Display prices
+				if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+					$sort_order = array();
+
+					$results = $this->model_setting_extension->getExtensions('total');
+
+					foreach ($results as $key => $value) {
+						$sort_order[$key] = $this->config->get('total_' . $value['code'] . '_sort_order');
+					}
+
+					array_multisort($sort_order, SORT_ASC, $results);
+
+					foreach ($results as $result) {
+						if ($this->config->get('total_' . $result['code'] . '_status')) {
+							$this->load->model('extension/total/' . $result['code']);
+							
+							// We have to put the totals in an array so that they pass by reference.
+							$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+						}
+					}
+
+					$sort_order = array();
+
+					foreach ($totals as $key => $value) {
+						$sort_order[$key] = $value['sort_order'];
+					}
+
+					array_multisort($sort_order, SORT_ASC, $totals);
 				}
 
-				array_multisort($sort_order, SORT_ASC, $totals);
+				$data['totals'] = array();
+
+
+				foreach ($totals as $total) {
+					$data['totals'][] = array(
+						'title' => $total['title'],
+						'text'  => $this->currency->format($total['value'], $this->session->data['currency'])
+					);
+
+					$data['total'] = $total['value'];
+				}
+
+				$data['count_cart'] = $this->cart->countProducts();
+
+				$json = $data;
+			} else {
+				$json['total'] = 0;
+				$json['count_cart'] = 0;
 			}
-
-			$json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0), $this->currency->format($total, $this->session->data['currency']));
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

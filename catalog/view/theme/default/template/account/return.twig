@@ -1,0 +1,187 @@
+{{ header }}
+<div id="account-account" class="container page-{{page}}">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>Личный кабинет</h2>
+  <div class="row">
+    {{ column_left }}
+    <div id="content" class="col-md-9 col-sm-12 account_content account_content_return">
+      <h3>Возврат товара</h3>
+      <div class="rowmin">
+        <form id="form-return" method="post" enctype="multipart/form-data" class="form-horizontal account_return">
+          {% if mobile %}
+          <div class="col-sm-5 col-sm-offset-1 col-xs-12">
+            <div class="account_return_file">
+              <div><a href="../Бланк возврата Альфа Свет.xlsx" class="btn_black">Скачать бланк возврата</a></div>
+              <div>
+                <div class="btn_gold">Загрузить файл</div>
+                <input type="hidden" name="file_code" value=""/>
+                <p>Файлы типа: pdf, xlsx, docx</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          <div class="col-sm-5 col-xs-12">
+            <div class="form_block">
+              <h4>Информация о заказе</h4>
+              <div class="form-group required">
+                <label for="input-company" class="control-label">Компания*</label>
+                <input id="input-company" type="text" class="form-control" name="company" value="">
+              </div>
+              <div class="form-group required">
+                <label for="input-firstname" class="control-label">Имя*</label>
+                <input id="input-firstname" type="text" class="form-control" name="firstname" value="">
+              </div>
+              <div class="form-group required">
+                <label for="input-telephone" class="control-label">Телефон*</label>
+                <input id="input-telephone" type="text" class="form-control" name="telephone" value="">
+              </div>
+              <div class="form-group required">
+                <label for="input-date" class="control-label">Планируемая дата отправки*</label>
+                <input id="input-date" type="text" class="form-control" name="date" value="">
+              </div>
+              <h4>Информация о товаре</h4>
+              <div class="form-group">
+                <label for="input-product-name" class="control-label">Наименование товара</label>
+                <input id="input-product-name" type="text" class="form-control" name="product_name" value="">
+              </div>
+              <div class="form-group">
+                <label for="input-quantity" class="control-label">Количество</label>
+                <input id="input-quantity" type="text" class="form-control" name="quantity" value="">
+              </div>
+              <div class="form-group">
+                <label for="input-comment" class="control-label">Причина возврата</label>
+                <textarea id="input-comment" class="form-control" rows="5" type="text" name="comment"></textarea>
+              </div>
+              <div class="form-group form_btn">
+                <input type="submit" value="Отправить" class="btn_black" />
+              </div>
+            </div>
+            <div class="form_success">Ваше сообщение отправлено!</div>
+          </div>
+          {% if not mobile %}
+          <div class="col-sm-5 col-sm-offset-1 col-xs-12">
+            <div class="account_return_file">
+              <div><a href="../Бланк возврата Альфа Свет.xlsx" class="btn_black" target="_blank">Скачать бланк возврата</a></div>
+              <div>
+                <div class="btn_gold">Загрузить файл</div>
+                <input type="hidden" name="file_code" value=""/>
+                <p>Файлы типа: pdf, xlsx, docx</p>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('.account_return_file .btn_gold').on('click', function() {
+    var element = this;
+
+    $('#form-upload').remove();
+
+    $('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display: none;"><input type="file" name="file" /></form>');
+
+    $('#form-upload input[name="file"]').trigger('click');
+
+    if (typeof timer != 'undefined') {
+        clearInterval(timer);
+    }
+
+    timer = setInterval(function() {
+      if ($('#form-upload input[name="file"]').val() != '') {
+        clearInterval(timer);
+
+        $.ajax({
+          url: 'index.php?route=tool/upload',
+          type: 'post',
+          dataType: 'json',
+          data: new FormData($('#form-upload')[0]),
+          cache: false,
+          contentType: false,
+          processData: false,
+          beforeSend: function() {
+            //$(element).button('loading');
+          },
+          success: function(json) {
+            if (json['error']) {
+              alert(json['error']);
+            }
+
+            if (json['success']) {
+              //alert(json['success']);
+
+              $(element).text(json['filename']);
+              $('input[name="file_code"]').val(json['code']);
+            }
+          },
+          error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+          }
+        });
+      }
+    }, 500);
+  });
+
+  $('#form-return').submit(function(e){
+    e = e || event;
+    e.preventDefault();
+
+    var self = $(this);
+    var form_data = {};
+    var form_error = false;
+
+    self.find('input, label').removeClass('_error');
+
+    self.find('.form-group.required input, .form-group.required textarea').each(function(){
+      if($(this).val() == '' || $(this).val().length < 2){
+        form_error = true;
+        $(this).addClass('_error');
+        $(this).prev().addClass('_error');
+      }
+    });
+
+    if(!form_error){
+      self.find('input, textarea').each(function(){
+        form_data[$(this).attr('name')] = $(this).val();
+      });
+
+      $.ajax({
+        url: 'index.php?route=account/return/form',
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        complete: function() {
+            //self.find('.btn_review').text('Отправляется');
+        },
+        success: function(json) {
+          console.log(json);
+
+          if(json.success){
+            self.find('.form_block').css('display', 'none');
+            self.find('.form_success').css('display', 'block');
+
+            
+            $('html, body').animate({ scrollTop: ($('.account_content_return').offset().top - 70) }, 'slow');
+
+            setTimeout(function(){
+              self.find('input:not([type="submit"]), textarea').each(function(){
+                $(this).val('');
+              });
+
+              self.find('.form_success').css('display', 'none');
+              self.find('.form_block').css('display', 'block');
+            }, 3500);
+          }
+        }
+      });
+    }
+  });
+</script>
+{{ footer }}

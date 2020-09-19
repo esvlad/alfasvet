@@ -1,66 +1,100 @@
 {{ header }}
-<div id="account-wishlist" class="container">
+<div id="account-account" class="container page-{{page}}">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  {% if success %}
-  <div class="alert alert-success alert-dismissible"><i class="fa fa-check-circle"></i> {{ success }}
-    <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h2>Личный кабинет</h2>
+  <div class="row">
+    {{ column_left }}
+    <div id="content" class="col-md-9 col-sm-12 account_content account_content_wishlist">
+      <h3>Избранное</h3>
+      <div class="wishlist">
+        {% if products %}
+        <div class="product_list">
+        {% for product in products %}
+          <div class="product-layout product_list_item" data-product="{{ product.product_id }}">
+            {% if product.special %}
+            <span class="stock">Акция</span>
+            {% endif %}
+            {% if product.hit %}
+            <span class="hit">Хит</span>
+            {% endif %}
+            <div class="product-thumb transition product_list_item_padding">
+              <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
+              <div class="caption">
+                <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+                <div class="caption_parameters">
+                  {% if product.attributes %}
+                  {% for attribute in product.attributes %}
+                  <span class="attribute" data-attributes="{{attribute.attribute_id}}">{{attribute.text}}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+                <div class="instock_wishlist">
+                  <div class="instock_block"><span class="instock">В наличии</span></div>
+                  <div class="wishlist_block"><span class="wishlist on" onclick="wishlist.remove('{{ product.product_id }}');">Добавлено</span></div>
+                </div>
+                <div class="row price_cart">
+                  <div class="col-sm-6">
+                    {% if product.price %}
+                    <p class="price">
+                      {% if not product.special %}
+                      <span class="price-new">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                      {% else %}
+                      <span class="price-old">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.3 35.74"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M18.29,25.05v3.69H8.2v7H3.34v-7H.05V25.05H3.34V20.34H0V16.65H3.34V0H13.4a22,22,0,0,1,5.36.6,11.49,11.49,0,0,1,4.06,1.85A8.25,8.25,0,0,1,25.4,5.58,10.18,10.18,0,0,1,26.3,10a10.72,10.72,0,0,1-.76,4.07,8.5,8.5,0,0,1-2.39,3.28A11.71,11.71,0,0,1,19,19.55a20.34,20.34,0,0,1-6.06.79H8.2v4.71Zm3-15q0-3.44-2-4.91T13.18,3.69h-5v13h4.54a18.33,18.33,0,0,0,3.57-.31A7.16,7.16,0,0,0,19,15.27a4.83,4.83,0,0,0,1.68-2A7.64,7.64,0,0,0,21.25,10.06Z"/></g></g></svg></span>
+                      <span class="price-new">{{ product.special }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                      {% endif %}
+                      {% if product.tax %}
+                      <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
+                      {% endif %}
+                    </p>
+                    {% endif %}
+                  </div>
+                  <div class="col-sm-6">
+                      <div class="in_cart" onclick="cart.add('{{ product.product_id }}');"><span>В корзину</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+        </div>
+        {% else %}
+        <p>Избранных товаров нет, но&nbsp;вы&nbsp;можете их&nbsp;добавить.</p>
+        {% endif %}
+      </div>
+    </div>
   </div>
-  {% endif %}
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h2>{{ heading_title }}</h2>
-      {% if products %}
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <td class="text-center">{{ column_image }}</td>
-              <td class="text-left">{{ column_name }}</td>
-              <td class="text-left">{{ column_model }}</td>
-              <td class="text-right">{{ column_stock }}</td>
-              <td class="text-right">{{ column_price }}</td>
-              <td class="text-right">{{ column_action }}</td>
-            </tr>
-          </thead>
-          <tbody>
-          
-          {% for product in products %}
-          <tr>
-            <td class="text-center">{% if product.thumb %}<a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" /></a>{% endif %}</td>
-            <td class="text-left"><a href="{{ product.href }}">{{ product.name }}</a></td>
-            <td class="text-left">{{ product.model }}</td>
-            <td class="text-right">{{ product.stock }}</td>
-            <td class="text-right">{% if product.price %}
-              <div class="price"> {% if not product.special %}
-                {{ product.price }}
-                {% else %} <b>{{ product.special }}</b> <s>{{ product.price }}</s> {% endif %} </div>
-              {% endif %}</td>
-            <td class="text-right"><button type="button" onclick="cart.add('{{ product.product_id }}');" data-toggle="tooltip" title="{{ button_cart }}" class="btn btn-primary"><i class="fa fa-shopping-cart"></i></button>
-              <a href="{{ product.remove }}" data-toggle="tooltip" title="{{ button_remove }}" class="btn btn-danger"><i class="fa fa-times"></i></a></td>
-          </tr>
-          {% endfor %}
-            </tbody>
-          
-        </table>
-      </div>
-      {% else %}
-      <p>{{ text_empty }}</p>
-      {% endif %}
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
-      </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
 </div>
+<!--<div class="product_cart clearfix" data-product="{{ product.product_id }}">
+            <span class="delete"></span>
+            <div class="image"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-thumbnail" /></div>
+            <div class="name">
+              <a href="{{ product.href }}">{{ product.name }}</a>{% if product.option %} -{% for option in product.option %} <span>{{ option.name }}: {{ option.value }};</span>{% endfor %}{% endif %}
+            </div>
+            <div class="price">
+            {% if product.price %}
+            {% if not product.special %}
+            {% set price = product.price %}
+            {% else %}
+            {% set price = product.special %}
+            {% endif %}
+            {{ price }}
+            {% endif %}
+            </div>
+            <div class="quantity" data-price="{{ price }}" data-reward="{{ product.reward }}">
+              <span class="minus">-</span>
+              <span class="qnum">1</span>
+              <span class="num">шт</span>
+              <span class="plus">+</span>
+              <input id="input-quantity{{ product.product_id }}" class="input_quantity" type="hidden" name="quantity[{{ product.product_id }}]" value="" />
+            </div>
+            <div class="total"><span>Итого:</span><span class="_total">{{ price }}</span><span class="reward">+<i>{{ product.reward }}</i> Бонусов</span></div>
+            <div class="to_cart"><a href="#" onclick="cart.add('{{ product.product_id }}'); event.preventDefault();" data-toggle="tooltip">В корзину</a></div>
+          </div>-->
+<script>
+</script>
 {{ footer }}
+        

@@ -278,13 +278,13 @@ class ControllerCustomerCustomer extends Controller {
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'name';
+			$sort = 'c.date_added';
 		}
 
 		if (isset($this->request->get['order'])) {
 			$order = $this->request->get['order'];
 		} else {
-			$order = 'ASC';
+			$order = 'DESC';
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -394,7 +394,7 @@ class ControllerCustomerCustomer extends Controller {
 			
 			$data['customers'][] = array(
 				'customer_id'    => $result['customer_id'],
-				'name'           => $result['name'],
+				'name'           => $result['firstname'],
 				'email'          => $result['email'],
 				'customer_group' => $result['customer_group'],
 				'status'         => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -755,6 +755,8 @@ class ControllerCustomerCustomer extends Controller {
 			);
 		}
 
+		$data['uri_file'] = $this->url->link('tool/upload/download', 'user_token=' . $this->session->data['user_token'], true);
+
 		if (isset($this->request->post['custom_field'])) {
 			$data['account_custom_field'] = $this->request->post['custom_field'];
 		} elseif (!empty($customer_info)) {
@@ -769,6 +771,29 @@ class ControllerCustomerCustomer extends Controller {
 			$data['newsletter'] = $customer_info['newsletter'];
 		} else {
 			$data['newsletter'] = '';
+		}
+
+		$data['bonus_status_array'] = [
+			[
+			'status_id' => 0,
+			'name'		=> 'Начальный'
+			],
+			[
+			'status_id' => 1,
+			'name'		=> 'Опытный'
+			],
+			[
+			'status_id' => 2,
+			'name'		=> 'Продвинутый'
+			]
+		];
+
+		if (isset($this->request->post['bonus_status'])) {
+			$data['bonus_status'] = $this->request->post['bonus_status'];
+		} elseif (!empty($customer_info)) {
+			$data['bonus_status'] = $customer_info['bonus_status'];
+		} else {
+			$data['bonus_status'] = '';
 		}
 
 		if (isset($this->request->post['status'])) {
@@ -960,9 +985,9 @@ class ControllerCustomerCustomer extends Controller {
 			$this->error['firstname'] = $this->language->get('error_firstname');
 		}
 
-		if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
+		/*if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen(trim($this->request->post['lastname'])) > 32)) {
 			$this->error['lastname'] = $this->language->get('error_lastname');
-		}
+		}*/
 
 		if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
 			$this->error['email'] = $this->language->get('error_email');

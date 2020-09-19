@@ -1,24 +1,49 @@
 <div class="swiper-viewport">
-  <div id="carousel{{ module }}" class="swiper-container">
-    <div class="swiper-wrapper">{% for banner in banners %}
-      <div class="swiper-slide text-center">{% if banner.link %}<a href="{{ banner.link }}"><img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" /></a>{% else %}<img src="{{ banner.image }}" alt="{{ banner.title }}" class="img-responsive" />{% endif %}</div>
-      {% endfor %}</div>
+  <div id="carousel{{ banner_id }}" class="swiper-container full_images{{ banner_id }}">
+    <div class="swiper-wrapper">
+      {% for banner in banners %}
+      <div class="swiper-slide">
+        <div class="banner_block">
+          <div class="banner_block_image">
+            {% if banner.full_image %}
+            <a class="full_image" href="{{ banner.full_image }}" title="{{ banner.title }}"><img src="{{ banner.image }}" alt="{{ banner.title }}" /></a>
+            {% else %}
+            <img src="{{ banner.image }}" alt="{{ banner.title }}" />
+            {% endif %}
+          </div>
+          {% if banner.title %}
+          <p>{{ banner.title }}</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
-  <div class="swiper-pagination carousel{{ module }}"></div>
-  <div class="swiper-pager">
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
+  <div class="arrows_more">
+    <div class="arrows">
+      <span class="arrows_left swiper_left{{ banner_id }}"></span>
+      <span class="arrows_right swiper_right{{ banner_id }}"></span>
+    </div>
   </div>
 </div>
 <script type="text/javascript"><!--
-$('#carousel{{ module }}').swiper({
+$('#carousel{{ banner_id }}').swiper({
 	mode: 'horizontal',
-	slidesPerView: 5,
-	pagination: '.carousel{{ module }}',
+	slidesPerView: {{ slides }},
+  spaceBetween: {{ space }},
 	paginationClickable: true,
-	nextButton: '.swiper-button-next',
-    prevButton: '.swiper-button-prev',
-	autoplay: 2500,
-	loop: true
+	nextButton: '.swiper_right{{ banner_id }}',
+  prevButton: '.swiper_left{{ banner_id }}',
+	loop: false
+});
+
+$(document).ready(function() {
+  $('.full_images{{ banner_id }}').magnificPopup({
+    type:'image',
+    delegate: 'a',
+    gallery: {
+      enabled: true
+    }
+  });
 });
 --></script>

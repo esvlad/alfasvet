@@ -1,0 +1,94 @@
+<form id="form-specialst" class="form-horizontal specialst">
+   	<div class="form_block">
+        <div class="form-group sname">
+        	<img class="sname_img" src="catalog/view/theme/default/image/userpic2.png" alt="">
+        	<p>Игорь Швабауэр</p>
+        	<p>Специалист отдела продаж</p>
+        </div>
+        <div class="form-group stext">
+        	<h2>Спросите специалиста</h2>
+        </div>
+        <div class="form-group required">
+	        <div class="col-sm-6">
+	            <label class="control-label" for="sname">Имя</label>
+	            <input type="text" name="sname" value="" id="sname" class="form-control _required" />
+	        </div>
+	        <div class="col-sm-6">
+	            <label class="control-label" for="sphone">Телефон</label>
+	            <input type="tel" name="sphone" value="" id="sphone" class="form-control _required" />
+	        </div>
+        </div>
+        <div class="form-group required">
+        	<div class="col-sm-12">
+	            <label class="control-label" for="sanswer">Вопрос</label>
+	            <textarea name="sanswer" rows="5" id="sanswer" class="form-control _required"></textarea>
+        	</div>
+        </div>
+        <div class="form-group buttons clearfix">
+        	<button type="submit" class="btn_review"><span>Задать вопрос</span></button>
+        	<div class="text_politics">
+        		<span>Нажимая на кнопку, вы соглашаетесь с условиями <a href="{{politics}}" target="_blank">политики конфиденциальности и обработки персональных данных</a></span>
+        	</div>
+        </div>
+   	</div>
+   	<div class="form_success"><span>Спасибо, ваше сообщение отправлено, наш специалист свяжется с вами в ближайшее время!</span></div>
+</form>
+<script>
+    $('.specialst').submit(function(e){
+        e = e || event;
+        e.preventDefault();
+
+        var self = $(this);
+        var form_data = {};
+        var form_error = false;
+
+        self.find('input._required, textarea._required').each(function(){
+            $(this).removeClass('_error');
+            $(this).prev().removeClass('_error');
+
+            if($(this).val() == '' || $(this).val().length < 2){
+                form_error = true;
+                $(this).addClass('_error');
+                $(this).prev().addClass('_error');
+            } else {
+                form_data[$(this).attr('name')] = $(this).val();
+            }
+        });
+
+        if(!form_error){
+            form_data['uri'] = location.href;
+            form_data['page'] = $('input[name="title_page"]').val();
+
+            $.ajax({
+                url: 'index.php?route=common/footer/specialist',
+                type: 'post',
+                data: form_data,
+                dataType: 'json',
+                complete: function() {
+                    //self.find('.btn_review').text('Отправляется');
+                },
+                success: function(json) {
+                    console.log(json);
+
+                    if(json.success){
+                        self.find('.form_block').animate({'opacity': 0}, 150);
+                        self.find('.form_success').fadeIn(150);
+
+                        setTimeout(function(){
+                            self.find('input._required, textarea._required').each(function(){
+                                $(this).val('');
+                            });
+
+                            self.find('.form_success').fadeOut(150);
+                            self.find('.form_block').animate({'opacity': 1}, 150);
+                        }, 3500);
+                    }
+                }
+            });
+        }
+    });
+
+    $('input[type="tel"]').bind('input', function(e){
+        this.value = this.value.replace(/[^\d]/g,'');
+    });
+</script>

@@ -513,6 +513,30 @@ class ControllerCatalogReview extends Controller {
 			$data['rating'] = '';
 		}
 
+		if (isset($this->request->post['design'])) {
+			$data['design'] = $this->request->post['design'];
+		} elseif (!empty($review_info)) {
+			$data['design'] = $review_info['design'];
+		} else {
+			$data['design'] = '';
+		}
+
+		if (isset($this->request->post['price'])) {
+			$data['price'] = $this->request->post['price'];
+		} elseif (!empty($review_info)) {
+			$data['price'] = $review_info['price'];
+		} else {
+			$data['price'] = '';
+		}
+
+		if (isset($this->request->post['quality'])) {
+			$data['quality'] = $this->request->post['quality'];
+		} elseif (!empty($review_info)) {
+			$data['quality'] = $review_info['quality'];
+		} else {
+			$data['quality'] = '';
+		}
+
 		if (isset($this->request->post['date_added'])) {
 			$data['date_added'] = $this->request->post['date_added'];
 		} elseif (!empty($review_info)) {

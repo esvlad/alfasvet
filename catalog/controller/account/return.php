@@ -36,7 +36,7 @@ class ControllerAccountReturn extends Controller {
 			'href' => $this->url->link('account/return', $url, true)
 		);
 
-		$this->load->model('account/return');
+		/*$this->load->model('account/return');
 
 		if (isset($this->request->get['page'])) {
 			$page = $this->request->get['page'];
@@ -71,7 +71,9 @@ class ControllerAccountReturn extends Controller {
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($return_total) ? (($page - 1) * $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit')) + 1 : 0, ((($page - 1) * $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit')) > ($return_total - $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit'))) ? $return_total : ((($page - 1) * $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit')) + $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit')), $return_total, ceil($return_total / $this->config->get('theme_' . $this->config->get('config_theme') . '_product_limit')));
 
-		$data['continue'] = $this->url->link('account/account', '', true);
+		$data['continue'] = $this->url->link('account/account', '', true);*/
+
+		$data['page'] = 'return';
 
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['column_right'] = $this->load->controller('common/column_right');
@@ -80,7 +82,12 @@ class ControllerAccountReturn extends Controller {
 		$data['footer'] = $this->load->controller('common/footer');
 		$data['header'] = $this->load->controller('common/header');
 
-		$this->response->setOutput($this->load->view('account/return_list', $data));
+		$mb_detected = new MobileDetect;
+		if($mb_detected->isMobile() && !$mb_detected->isTablet()){
+			$data['mobile'] = 1;
+		}
+
+		$this->response->setOutput($this->load->view('account/return', $data));//return_list
 	}
 
 	public function info() {
@@ -529,5 +536,48 @@ class ControllerAccountReturn extends Controller {
 		$data['header'] = $this->load->controller('common/header');
 
 		$this->response->setOutput($this->load->view('common/success', $data));
+	}
+
+	public function form(){
+		$json = array();
+		$data = array();
+
+		$json['post'] = $this->request->post;
+
+		$data['company'] = $this->request->post['company'];
+		$data['name'] = $this->request->post['firstname'];
+		$data['phone'] = $this->request->post['telephone'];
+		$data['date'] = $this->request->post['date'];
+		$data['product_name'] = $this->request->post['product_name'];
+		$data['quantity'] = $this->request->post['quantity'];
+		$data['comment'] = html_entity_decode($this->request->post['comment'], ENT_QUOTES, 'UTF-8');
+
+		if(!empty($this->request->post['file_code'])){
+			$data['file'] = $this->url->link('tool/upload/rekviz', 'code=' . $this->request->post['file_code']);
+		}
+
+		$subject = $data['title'] = sprintf('%s - Новая заявка по возврату товара', html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+
+		$json['success'] = $this->send_mail($subject, $data, 'return');
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	private function send_mail($subject, $data = array(), $page){
+		$data['store_url'] = $this->config->get('config_url');
+		$data['store_name'] = $this->config->get('config_name');
+
+		$mail = new Mail();
+
+		$mail->setTo('sale@ledoptom.com');//$this->config->get('config_email')
+		$mail->setFrom($this->config->get('config_email'));
+		$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+		$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
+		$mail->setHtml($this->load->view('mail/'.$page, $data));
+		//$mail->setText($text);
+		$mail->send();
+
+		return true;
 	}
 }

@@ -1,0 +1,91 @@
+<div class="modal_detail">
+  <h2>Детали заказа <span>№{{ order_id }}</span></h2>
+  <div class="detail_products">
+    <h3>Ваши товары</h3>
+    <div class="detail_products_list">
+      {% for produt in products %}
+      <div class="detail_products_item clearfix">
+        <div class="name">{{ produt.name }}{% if produt.option %} {% for option in produt.option %} <span>{{option.name}}: {{option.value}};</span>{% endfor %}{% endif %}</div>
+        <div class="quan">{{ produt.quantity }} шт.</div>
+        <div class="total">{{ produt.total }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="detail_products_total">Итого: <span>{{ totals }}</span> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></div>
+  </div>
+  <div class="detail_shipay clearfix">
+    <div class="col-sm-5">
+      <h3>Способ оплаты</h3>
+      <p>{{ order.payment_method }}</p>
+    </div>
+    <div class="col-sm-7">
+      <h3>Способ доставки</h3>
+      <p>{{ order.shipping_method }}</p>
+      {% if order.shipping_code == 'pickup' %}
+        <p class="small">Стоимость доставки транспортной компанией рассчитывается согласно тарифам и оплачивается при получении товара. После оформления заказа с вами свяжется менеджер и поможет организовать доставку</p>
+      {% endif %}
+    </div>
+  </div>
+  <div class="detail_data clearfix">
+    <div class="col-sm-5">
+      <h3>Данные для доставки</h3>
+      <div class="detail_data_list">
+        <div class="detail_data_item">
+          <div class="_title">ФИО</div>
+          <div class="_caption">{{ order.firstname }}</div>
+        </div>
+        <div class="detail_data_item">
+          <div class="_title">Email</div>
+          <div class="_caption">{{ order.email }}</div>
+        </div>
+        <div class="detail_data_item">
+          <div class="_title">Телефон</div>
+          <div class="_caption">{{ order.telephone }}</div>
+        </div>
+        <div class="detail_data_item">
+          <div class="_title">Физ. лицо</div>
+          <div class="_caption">&nbsp;</div>
+        </div>
+        <div class="detail_data_item">
+          <div class="_title">&nbsp;</div>
+          <div class="_caption">&nbsp;</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-7">
+      <h3>&nbsp;</h3>
+      <div class="detail_data_list">
+        {% if order.shipping_zone %}
+        <div class="detail_data_item">
+          <div class="_title">Регион, Область</div>
+          <div class="_caption">{{ order.shipping_zone }}</div>
+        </div>
+        {% endif %}
+        {% if order.shipping_city %}
+        <div class="detail_data_item">
+          <div class="_title">Город ( населенный пункт)</div>
+          <div class="_caption">{{ order.shipping_city }}</div>
+        </div>
+        {% endif %}
+        {% if order.shipping_address_1 %}
+        <div class="detail_data_item">
+          <div class="_title">Улица</div>
+          <div class="_caption">{{ order.shipping_address_1 }}</div>
+        </div>
+        {% endif %}
+        {% if order.shipping_postcode %}
+        <div class="detail_data_item">
+          <div class="_title">Индекс</div>
+          <div class="_caption">{{ order.shipping_postcode }}</div>
+        </div>
+        {% endif %}
+        {% if order.shipping_kvartira %}
+        <div class="detail_data_item">
+          <div class="_title">&nbsp;</div>
+          <div class="_caption">&nbsp;</div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

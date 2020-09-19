@@ -5,46 +5,31 @@ class ModelCatalogReview extends Model {
 
 		$review_id = $this->db->getLastId();
 
-		if (in_array('review', (array)$this->config->get('config_mail_alert'))) {
-			$this->load->language('mail/review');
-			$this->load->model('catalog/product');
-			
-			$product_info = $this->model_catalog_product->getProduct($product_id);
+		$this->load->model('catalog/product');
+		
+		$product_info = $this->model_catalog_product->getProduct($product_id);
 
-			$subject = sprintf($this->language->get('text_subject'), html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+		$data['store_url'] = $this->config->get('config_url');
+		$data['store_name'] = $this->config->get('config_name');
 
-			$message  = $this->language->get('text_waiting') . "\n";
-			$message .= sprintf($this->language->get('text_product'), html_entity_decode($product_info['name'], ENT_QUOTES, 'UTF-8')) . "\n";
-			$message .= sprintf($this->language->get('text_reviewer'), html_entity_decode($data['name'], ENT_QUOTES, 'UTF-8')) . "\n";
-			$message .= sprintf($this->language->get('text_rating'), $data['rating']) . "\n";
-			$message .= $this->language->get('text_review') . "\n";
-			$message .= html_entity_decode($data['text'], ENT_QUOTES, 'UTF-8') . "\n\n";
+		$data['page'] = html_entity_decode($product_info['name'], ENT_QUOTES, 'UTF-8');
+		$data['uri'] = $this->url->link('catalog/product', 'product_id='.(int)$product_id);
 
-			$mail = new Mail($this->config->get('config_mail_engine'));
-			$mail->parameter = $this->config->get('config_mail_parameter');
-			$mail->smtp_hostname = $this->config->get('config_mail_smtp_hostname');
-			$mail->smtp_username = $this->config->get('config_mail_smtp_username');
-			$mail->smtp_password = html_entity_decode($this->config->get('config_mail_smtp_password'), ENT_QUOTES, 'UTF-8');
-			$mail->smtp_port = $this->config->get('config_mail_smtp_port');
-			$mail->smtp_timeout = $this->config->get('config_mail_smtp_timeout');
+		$data['name'] = html_entity_decode($data['name'], ENT_QUOTES, 'UTF-8');
+		$data['rating'] = (int)$data['rating'];
+		$data['message'] = html_entity_decode($data['text'], ENT_QUOTES, 'UTF-8');
 
-			$mail->setTo($this->config->get('config_email'));
-			$mail->setFrom($this->config->get('config_email'));
-			$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
-			$mail->setSubject($subject);
-			$mail->setText($message);
-			$mail->send();
+		$subject = $data['title'] = sprintf('%s - Новый отзыв к товару на сайте', html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
 
-			// Send to additional alert emails
-			$emails = explode(',', $this->config->get('config_mail_alert_email'));
+		$mail = new Mail();
 
-			foreach ($emails as $email) {
-				if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-					$mail->setTo($email);
-					$mail->send();
-				}
-			}
-		}
+		$mail->setTo('sale@ledoptom.com');//$this->config->get('config_email')
+		$mail->setFrom($this->config->get('config_email'));
+		$mail->setSender(html_entity_decode($this->config->get('config_name'), ENT_QUOTES, 'UTF-8'));
+		$mail->setSubject(html_entity_decode($subject, ENT_QUOTES, 'UTF-8'));
+		$mail->setHtml($this->load->view('mail/review', $data));
+		//$mail->setText($text);
+		$mail->send();
 	}
 
 	public function getReviewsByProductId($product_id, $start = 0, $limit = 20) {

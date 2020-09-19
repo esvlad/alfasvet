@@ -382,10 +382,71 @@ class ControllerToolUpload extends Controller {
 
 			$json['code'] = $this->model_tool_upload->addUpload($filename, $file);
 
+			/*$json['filename'] = $filename;
+			$json['filepath'] = DIR_UPLOAD . $filename;*/
 			$json['success'] = $this->language->get('text_upload');
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function rekviz() {
+		$this->load->model('tool/upload');
+
+		if (isset($this->request->get['code'])) {
+			$code = $this->request->get['code'];
+		} else {
+			$code = 0;
+		}
+
+		$upload_info = $this->model_tool_upload->getUploadByCode($code);
+
+		if ($upload_info) {
+			$file = DIR_UPLOAD . $upload_info['filename'];
+			$mask = basename($upload_info['name']);
+
+			if (!headers_sent()) {
+				if (is_file($file)) {
+					header('Content-Type: application/octet-stream');
+					header('Content-Description: File Transfer');
+					header('Content-Disposition: attachment; filename="' . ($mask ? $mask : basename($file)) . '"');
+					header('Content-Transfer-Encoding: binary');
+					header('Expires: 0');
+					header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+					header('Pragma: public');
+					header('Content-Length: ' . filesize($file));
+
+					readfile($file, 'rb');
+					exit;
+				} else {
+					exit('Error: Could not find file ' . $file . '!');
+				}
+			} else {
+				exit('Error: Headers already sent out!');
+			}
+		} else {
+			$this->load->language('error/not_found');
+
+			$this->document->setTitle($this->language->get('heading_title'));
+
+			$data['breadcrumbs'] = array();
+
+			$data['breadcrumbs'][] = array(
+				'text' => $this->language->get('text_home'),
+				'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], true)
+			);
+
+			$data['breadcrumbs'][] = array(
+				'text' => $this->language->get('heading_title'),
+				'href' => $this->url->link('error/not_found', 'user_token=' . $this->session->data['user_token'], true)
+			);
+
+			$data['header'] = $this->load->controller('common/header');
+			$data['column_left'] = $this->load->controller('common/column_left');
+			$data['footer'] = $this->load->controller('common/footer');
+
+			$this->response->setOutput($this->load->view('error/not_found', $data));
+		}
 	}
 }

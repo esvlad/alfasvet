@@ -1,0 +1,20 @@
+{% for category in categories %}
+<div class="mmenu_slideups_child mmenu_border">
+  {% if category.children %}
+    {% if category.category_id == 17 %}
+    <h3><a href="{{ category.href }}">{{ category.name }}</a><span class="slide_arrow"></span></h3>
+    {% else %}
+    <h3><a>{{ category.name }}</a><span class="slide_arrow"></span></h3>
+    {% endif %}
+    <div class="mmenu_toogle_slideups_child">
+      {% for children in category.children|batch(category.children|length / category.column|round(1, 'ceil')) %}
+          {% for child in children %}
+          <h4><a href="{{ child.href }}">{{ child.name }}</a></h4>
+          {% endfor %}
+        {% endfor %}
+    </div>
+  {% else %}
+  <h3><a href="{{ category.href }}">{{ category.name }}</a></h3>
+  {% endif %}
+</div>
+{% endfor %}

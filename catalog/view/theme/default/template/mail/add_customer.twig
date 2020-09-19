@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>{{ title }}</title>
+</head>
+<body style="font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #000000;">
+<div style="width: 680px;"><a href="{{ store_url }}" title="{{ store_name }}"><img src="{{ store_url }}catalog/view/theme/default/img/logo_png.png" alt="{{ store_name }}" style="margin-bottom: 10px; border: none;" /></a>
+  <h3>На сайте зарегистрировался новый пользователь</h3>
+  <p style="margin-top: 0px; margin-bottom: 20px;"></p>
+  <table style="border-collapse: collapse; width: 100%; border-top: 1px solid #DDDDDD; border-left: 1px solid #DDDDDD; margin-bottom: 20px;">
+    <thead>
+      <tr>
+        <td style="font-size: 16px; border-right: 1px solid #DDDDDD; border-bottom: 1px solid #DDDDDD; background-color: #EFEFEF; font-weight: bold; text-align: center; padding: 7px; color: #222222;" colspan="2">Данные о клиенте</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-size: 14px; border-right: 1px solid #DDDDDD; border-bottom: 1px solid #DDDDDD; text-align: left; padding: 7px; width: 40%;">
+          <b>ID:</b> {{customer_id}}<br />
+          <b>ФИО:</b> {{ firstname }}<br />
+          <b>E-mail:</b> {{ email }}<br />
+          <b>Телефон:</b> {{ telephone }}<br /></td>
+      </tr>
+    </tbody>
+    {% if custom_field.account %}
+    <tfoot>
+      <tr>
+        <td style="font-size: 14px; border-right: 1px solid #DDDDDD; border-bottom: 1px solid #DDDDDD; text-align: left; padding: 7px; width: 100%;"  colspan="2">Дополнительные данные</td>
+      </tr>
+      <tr>
+        <td style="font-size: 14px; border-right: 1px solid #DDDDDD; border-bottom: 1px solid #DDDDDD; text-align: left; padding: 7px; width: 100%;"  colspan="2">
+          {% if custom_field.account[4] %}
+            {% if custom_field.account[4] == 2 %}
+            {% set user_type = 'Компания' %}
+            {% else %}
+            {% set user_type = 'Физ.лицо' %}
+            {% endif %}
+            <b>Тип пользователя:</b> {{user_type}}<br />
+          {% endif %}
+          {% if custom_field.account[2] %}
+            <b>ИНН:</b> {{custom_field.account[2]}}<br />
+          {% endif %}
+          {% if rekviz %}
+            <a href="{{rekviz}}">Реквизиты</a>
+          {% endif %}
+        </td>
+      </tr>
+    </tfoot>
+    {% endif %}
+  </table>
+</div>
+</body>
+</html>

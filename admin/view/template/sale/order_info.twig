@@ -128,22 +128,6 @@
         <table class="table table-bordered">
           <thead>
             <tr>
-              <td style="width: 50%;" class="text-left">{{ text_payment_address }}</td>
-              {% if shipping_method %}
-              <td style="width: 50%;" class="text-left">{{ text_shipping_address }}</td>
-              {% endif %} </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-left">{{ payment_address }}</td>
-              {% if shipping_method %}
-              <td class="text-left">{{ shipping_address }}</td>
-              {% endif %} </tr>
-          </tbody>
-        </table>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
               <td class="text-left">{{ column_product }}</td>
               <td class="text-left">{{ column_model }}</td>
               <td class="text-right">{{ column_quantity }}</td>
@@ -184,6 +168,51 @@
             </tbody>
           
         </table>
+        <table class="table table-bordered table-sale-alfa">
+          <thead>
+            <tr>
+              <td style="width: 50%;" class="text-left">Данные о клиенте</td>
+              {% if shipping_code == 'pickup' %}
+              <td style="width: 50%;" class="text-left">Данные по доставке</td>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="text-left">
+                <p><b>ФИО:</b> {{firstname}}</p>
+                <p><b>Email:</b> {{email}}</p>
+                <p><b>Телефон:</b> {{telephone}}</p>
+                <p><b>Тип клиента:</b> {{user_type}}</p>
+                {% if inn %}
+                <p><b>ИНН:</b> {{inn}}</p>
+                {% endif %}
+                {% if rekviz %}
+                <p><b>Реквизиты:</b> <a href="{{rekviz}}" target="_blank">Скачать</a></p>
+                {% endif %}
+              </td>
+              {% if shipping_code == 'pickup' %}
+              <td class="text-left">
+                {% if shipping_zone %}
+                <p><b>Регион, Область:</b> {{shipping_zone}}</p>
+                {% endif %}
+                {% if shipping_city %}
+                <p><b>Город (населенный пункт):</b> {{shipping_city}}</p>
+                {% endif %}
+                {% if shipping_address_1 %}
+                <p><b>Улица:</b> {{shipping_address_1}}</p>
+                {% endif %}
+                {% if shipping_address_kv %}
+                <p><b>Квартира:</b> {{shipping_address_kv}}</p>
+                {% endif %}
+                {% if shipping_postcode %}
+                <p><b>Индекс:</b> {{shipping_postcode}}</p>
+                {% endif %}
+              </td>
+              {% endif %}
+            </tr>
+          </tbody>
+        </table>
         {% if comment %}
         <table class="table table-bordered">
           <thead>
@@ -206,7 +235,7 @@
       <div class="panel-body">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#tab-history" data-toggle="tab">{{ tab_history }}</a></li>
-          <li><a href="#tab-additional" data-toggle="tab">{{ tab_additional }}</a></li>
+          <!--<li><a href="#tab-additional" data-toggle="tab">{{ tab_additional }}</a></li>-->
           {% for tab in tabs %}
           <li><a href="#tab-{{ tab.code }}" data-toggle="tab">{{ tab.title }}</a></li>
           {% endfor %}
@@ -222,36 +251,24 @@
                   <label class="col-sm-2 control-label" for="input-order-status">{{ entry_order_status }}</label>
                   <div class="col-sm-10">
                     <select name="order_status_id" id="input-order-status" class="form-control">
-                      
-                      
                       {% for order_statuses in order_statuses %}
                       {% if order_statuses.order_status_id == order_status_id %}
-                      
-                      
                       <option value="{{ order_statuses.order_status_id }}" selected="selected">{{ order_statuses.name }}</option>
-                      
-                      
                       {% else %}
-                      
-                      
                       <option value="{{ order_statuses.order_status_id }}">{{ order_statuses.name }}</option>
-                      
-                      
                       {% endif %}
                       {% endfor %}
-                    
-                    
                     </select>
                   </div>
                 </div>
-                <div class="form-group">
+                <!--<div class="form-group">
                   <label class="col-sm-2 control-label" for="input-override"><span data-toggle="tooltip" title="{{ help_override }}">{{ entry_override }}</span></label>
                   <div class="col-sm-10">
                     <div class="checkbox">
                       <input type="checkbox" name="override" value="1" id="input-override" />
                     </div>
                   </div>
-                </div>
+                </div>-->
                 <div class="form-group">
                   <label class="col-sm-2 control-label" for="input-notify">{{ entry_notify }}</label>
                   <div class="col-sm-10">

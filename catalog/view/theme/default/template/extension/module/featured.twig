@@ -1,42 +1,91 @@
-<h3>{{ heading_title }}</h3>
-<div class="row">
- {% for product in products %}
-  <div class="product-layout col-lg-3 col-md-3 col-sm-6 col-xs-12">
-    <div class="product-thumb transition">
-      <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
-      <div class="caption">
-        <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
-        <p>{{ product.description }}</p>
-        {% if product.rating %}
-        <div class="rating">
-          {% for i in 5 %}
-          {% if product.rating < i %}
-          <span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
-          {% else %}
-          <span class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span>
-          {% endif %}
-          {% endfor %}
+<div class="featured">
+  <h3 class="product_tite">Акции</h3>
+  <div class="product_list swiper-container">
+    <div class="wrapp_right"></div>
+   <div class="swiper-wrapper"> 
+   {% set p = 0 %}
+   {% for product in products %}
+    <div class="swiper-slide product-layout product_list_item" data-id="{{ product.product_id }}">
+      {% if product.special %}
+      <span class="stock">Акция</span>
+      {% endif %}
+      {% if product.hit %}
+      <span class="hit">Хит</span>
+      {% endif %}
+      <div class="product-thumb transition product_list_item_padding">
+        <div class="image"><a href="{{ product.href }}"><img src="{{ product.thumb }}" alt="{{ product.name }}" title="{{ product.name }}" class="img-responsive" /></a></div>
+        <div class="caption">
+          <h4><a href="{{ product.href }}">{{ product.name }}</a></h4>
+          <div class="caption_parameters">
+            {% if product.attributes %}
+            {% for attribute in product.attributes %}
+            <span class="attribute" data-attributes="{{attribute.attribute_id}}">{{attribute.text}}</span>
+            {% endfor %}
+            {% endif %}
+          </div>
+          <div class="instock_wishlist">
+            <div class="instock_block"><span class="instock">В наличии</span></div>
+            <div class="wishlist_block"><span class="wishlist" onclick="wishlist.add('{{ product.product_id }}');">В избранное</span></div>
+          </div>
+          <div class="row price_cart">
+            <div class="col-xs-6">
+              {% if product.price %}
+              <p class="price">
+                {% if not product.special %}
+                <span class="price-new">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                {% else %}
+                <span class="price-old">{{ product.price }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.3 35.74"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M18.29,25.05v3.69H8.2v7H3.34v-7H.05V25.05H3.34V20.34H0V16.65H3.34V0H13.4a22,22,0,0,1,5.36.6,11.49,11.49,0,0,1,4.06,1.85A8.25,8.25,0,0,1,25.4,5.58,10.18,10.18,0,0,1,26.3,10a10.72,10.72,0,0,1-.76,4.07,8.5,8.5,0,0,1-2.39,3.28A11.71,11.71,0,0,1,19,19.55a20.34,20.34,0,0,1-6.06.79H8.2v4.71Zm3-15q0-3.44-2-4.91T13.18,3.69h-5v13h4.54a18.33,18.33,0,0,0,3.57-.31A7.16,7.16,0,0,0,19,15.27a4.83,4.83,0,0,0,1.68-2A7.64,7.64,0,0,0,21.25,10.06Z"/></g></g></svg></span>
+                <span class="price-new">{{ product.special }} <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29.21 36.21"><g id="sl1" data-name="s1"><g id="sl2" data-name="s2"><path d="M0,17.33H16.68v4.83H0Zm0,8.59H16.68v4.83H0ZM4.31,0H9.39V36.21H4.31ZM6.92,17.33H18.5a5.4,5.4,0,0,0,2.89-.77,5.16,5.16,0,0,0,1.93-2.19A7.37,7.37,0,0,0,24,11.11a7.44,7.44,0,0,0-.69-3.29,5.19,5.19,0,0,0-1.93-2.2,5.24,5.24,0,0,0-2.89-.79H6.92V0H18.33A11.45,11.45,0,0,1,24,1.38a9.57,9.57,0,0,1,3.82,3.9,12,12,0,0,1,1.36,5.83,12,12,0,0,1-1.36,5.81A9.49,9.49,0,0,1,24,20.79a11.45,11.45,0,0,1-5.7,1.37H6.92Z"/></g></g></svg></span>
+                {% endif %}
+                {% if product.tax %}
+                <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
+                {% endif %}
+              </p>
+              {% endif %}
+            </div>
+            <div class="col-xs-6">
+                <div class="in_cart" onclick="cart.add('{{ product.product_id }}');"><span>В корзину</span></div>
+            </div>
+          </div>
         </div>
-        {% endif %}
-        {% if product.price %}
-        <p class="price">
-          {% if not product.special %}
-          {{ product.price }}
-          {% else %}
-          <span class="price-new">{{ product.special }}</span> <span class="price-old">{{ product.price }}</span>
-          {% endif %}
-          {% if product.tax %}
-          <span class="price-tax">{{ text_tax }} {{ product.tax }}</span>
-          {% endif %}
-        </p>
-        {% endif %}
-      </div>
-      <div class="button-group">
-        <button type="button" onclick="cart.add('{{ product.product_id }}');"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ button_cart }}</span></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
-        <button type="button" data-toggle="tooltip" title="{{ button_compare }}" onclick="compare.add('{{ product.product_id }}');"><i class="fa fa-exchange"></i></button>
       </div>
     </div>
+    {% set p = p + 1 %}
+    {% endfor %}
+    </div>
   </div>
-  {% endfor %}
+  <div class="arrows_more">
+    {% if p > 4 %}
+    <div class="arrows">
+      <span class="arrows_left product_swiper_left"></span>
+      <span class="arrows_right product_swiper_right"></span>
+    </div>
+    {% endif %}
+    <a href="{{more_link}}" class="abtn more_news_btn">Все акции</a>
+  </div>
 </div>
+<script type="text/javascript">  
+  $('.product_list').swiper({
+    mode: 'horizontal',
+    slidesPerView: 4,
+    spaceBetween: 20,
+    paginationClickable: true,
+    nextButton: '.product_swiper_right',
+    prevButton: '.product_swiper_left',
+    breakpoints: {
+      640: {
+          slidesPerView: 1,
+      },
+      800: {
+          slidesPerView: 2,
+      },
+      1100: {
+          slidesPerView: 3,
+      }
+    }
+  });
+  
+  $('.wrapp_right').click(function(){
+    $('.product_swiper_right').trigger('click');
+  });
+</script>

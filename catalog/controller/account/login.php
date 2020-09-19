@@ -182,4 +182,162 @@ class ControllerAccountLogin extends Controller {
 
 		return !$this->error;
 	}
+
+	public function autorization(){
+		$json = [];
+
+		$this->load->model('account/customer');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
+			if ((utf8_strlen($this->request->post['email']) > 96) || !filter_var($this->request->post['email'], FILTER_VALIDATE_EMAIL)) {
+				$json['errors']['email'] = 'Не правильно введен email.';
+			}
+
+			if ((utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) < 4) || (utf8_strlen(html_entity_decode($this->request->post['password'], ENT_QUOTES, 'UTF-8')) > 40)) {
+				$json['errors']['password'] = 'Не правильно введен пароль.';
+			}
+
+			if(empty($json['errors'])){
+				$customer_info = $this->model_account_customer->getCustomerByEmail($this->request->post['email']);
+
+				if(!empty($customer_info)){
+					if(!$this->customer->login($this->request->post['email'], $this->request->post['password'])){
+						$json['errors']['password'] = 'Не верный пароль.';
+					}
+				} else {
+					$json['errors']['email'] = 'Такой email не зарегистрирован.';
+				}
+			}
+
+			if(empty($json['errors'])){
+				if(isset($this->request->post['redirect'])){
+					$json['redirect'] = $this->request->post['redirect'];
+				} else {
+					$json['redirect'] = $this->url->link('account/account');
+				}
+			}
+		} else {
+			$json['errors'][] = 'Не правильно произведен запрос к контроллеру.';
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function sv_social_autorization(){
+		$json = [];
+
+		$socials = $this->config->get('module_sv_social_auth_setting');
+		$json['config_url'] = $this->config->get('config_url');
+
+		if(isset($this->request->get['auth_type'])){
+			$auth_type = $this->request->get['auth_type'];
+
+			if($auth_type == 'vk'){
+				$url = 'http://oauth.vk.com/authorize';
+				$redirect_uri = $this->url->link('account/login/sv_social_autorization_vk', '', true);
+
+				$params = array(
+				    'client_id'     => $socials['vk']['client_id'],
+				    'redirect_uri'  => $redirect_uri,
+				    'response_type' => 'code'
+				);
+
+				$json['url'] = $url  . '?' . urldecode(http_build_query($params));
+			}
+
+			if($auth_type == 'fb'){
+				$url = 'https://www.facebook.com/dialog/oauth';
+				$redirect_uri = $this->url->link('account/login/sv_social_autorization_fb', '', true);
+
+				$params = array(
+				    'client_id'     => $socials['vk']['client_id'],
+				    'redirect_uri'  => $redirect_uri,
+				    'response_type' => 'code',
+				    'scope'         => 'email,user_birthday'
+				);
+
+				$json['url'] = $url  . '?' . urldecode(http_build_query($params));
+			}
+
+			if($auth_type == 'ok'){
+				$url = 'http://www.odnoklassniki.ru/oauth/authorize';
+				$redirect_uri = $this->url->link('account/login/sv_social_autorization_ok', '', true);
+
+				$params = array(
+				    'client_id'     => $socials['ok']['client_id'],
+				    'response_type' => 'code',
+				    'redirect_uri'  => $redirect_uri
+				);
+
+				$json['url'] = $url  . '?' . urldecode(http_build_query($params));
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function sv_social_autorization_vk(){
+		$data = $json = [];
+
+		$this->load->model('account/customer');
+
+		$socials = $this->config->get('module_sv_social_auth_setting');
+		//$data['config_url'] = $this->config->get('config_url');
+		$redirect_uri = $this->url->link('account/login/sv_social_autorization_vk', '', true);
+
+		if(isset($this->request->get['code'])){
+			$params = array(
+		        'client_id' => $socials['vk']['client_id'],
+		        'client_secret' => $socials['vk']['client_secret'],
+		        'code' => $this->request->get['code'],
+		        'redirect_uri' => $redirect_uri
+		    );
+
+		    $token = json_decode(file_get_contents('https://oauth.vk.com/access_token' . '?' . urldecode(http_build_query($params))), true);
+
+		    if (isset($token['access_token'])){
+		    	$params = array(
+		            'uids'         => $token['user_id'],
+		            'fields'       => 'uid,first_name,last_name,screen_name,sex,bdate,photo_big',
+		            'access_token' => $token['access_token']
+		        );
+
+		        $userInfo = json_decode(file_get_contents('https://api.vk.com/method/users.get' . '?' . urldecode(http_build_query($params))), true);
+
+		        if (isset($userInfo['response'][0]['uid'])){
+		        	$userInfo = $userInfo['response'][0];
+		        	$result = true;
+		        }
+		    }
+
+		    if($result){
+		    	$data = [
+		    		'type' => 'vk',
+		    		'social_id' => $userInfo['uid'],
+		    		'link' => 'https://vk.com/' . $userInfo['screen_name'],
+		    		'data' => $userInfo,
+		    		'token' => ''
+		    	];
+
+		    	$customer_id = $this->model_account_customer->authCustomerSocial($data);
+
+		    	$this->session->data['customer_id'] = $customer_id;
+
+		    	$json['customer_id'] = $customer_id;
+
+		    	$this->response->redirect($this->url->link('account/account', '', true));
+		    }
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function sv_social_autorization_fb(){}
+
+	public function sv_social_autorization_ok(){}
+
+	public function sv_social_autorization_gg(){}
 }

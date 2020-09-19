@@ -350,13 +350,31 @@ class ControllerDesignBanner extends Controller {
 				
 				$data['banner_images'][$key][] = array(
 					'title'      => $banner_image['title'],
+					'caption'    => $banner_image['caption'],
+					'btn_caption' => $banner_image['btn_caption'],
 					'link'       => $banner_image['link'],
+					'colors'	 => json_decode($banner_image['colors'], true),
 					'image'      => $image,
 					'thumb'      => $this->model_tool_image->resize($thumb, 100, 100),
 					'sort_order' => $banner_image['sort_order']
 				);
 			}
 		}
+
+		$data['colors'] = [
+			[
+				'id' => 1,
+				'name' => 'Золотистый',
+			],
+			[
+				'id' => 2,
+				'name' => 'Белый',
+			],
+			[
+				'id' => 3,
+				'name' => 'Черный',
+			]
+		];
 
 		$data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
 

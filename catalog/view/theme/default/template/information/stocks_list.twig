@@ -1,0 +1,25 @@
+{{ header }}
+<div id="news_list" class="container">
+  <ul class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+    {% endfor %}
+  </ul>
+  <h2>{{ heading_title }}</h2>
+  <div class="rowmin news_list">
+  	{% for stock in stocks %}
+  	<div class="col-md-4 col-sm-6 col-xs-12">
+      <div class="news_block">
+        <div class="image"><a href="{{ stock['view'] }}"><img src="{{ stock['image'] }}" /></a></div>
+        <div class="caption">
+          <h3><a href="{{ stock['view'] }}">{{ stock['title'] }}</a></h3>
+          <p>{{ stock['description'] }}</p>
+          <p><a href="{{stock['view']}}"><span>Подробнее</span></a></p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{{ footer }} 

@@ -1,60 +1,289 @@
 {{ header }}
-<div id="account-order" class="container">
+<div id="account-account" class="container page-{{page}}">
   <ul class="breadcrumb">
     {% for breadcrumb in breadcrumbs %}
     <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
     {% endfor %}
   </ul>
-  <div class="row">{{ column_left }}
-    {% if column_left and column_right %}
-    {% set class = 'col-sm-6' %}
-    {% elseif column_left or column_right %}
-    {% set class = 'col-sm-9' %}
-    {% else %}
-    {% set class = 'col-sm-12' %}
-    {% endif %}
-    <div id="content" class="{{ class }}">{{ content_top }}
-      <h1>{{ heading_title }}</h1>
-      {% if orders %}
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead>
-            <tr>
-              <td class="text-right">{{ column_order_id }}</td>
-              <td class="text-left">{{ column_customer }}</td>
-              <td class="text-right">{{ column_product }}</td>
-              <td class="text-left">{{ column_status }}</td>
-              <td class="text-right">{{ column_total }}</td>
-              <td class="text-left">{{ column_date_added }}</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-           {% for order in orders %}
-            <tr>
-              <td class="text-right">#{{ order.order_id }}</td>
-              <td class="text-left">{{ order.name }}</td>
-              <td class="text-right">{{ order.products }}</td>
-              <td class="text-left">{{ order.status }}</td>
-              <td class="text-right">{{ order.total }}</td>
-              <td class="text-left">{{ order.date_added }}</td>
-              <td class="text-right"><a href="{{ order.view }}" data-toggle="tooltip" title="{{ button_view }}" class="btn btn-info"><i class="fa fa-eye"></i></a></td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+  <h2>Личный кабинет</h2>
+  <div class="row">
+    {{ column_left }}
+    <div id="content" class="col-md-9 col-sm-12 account_content account_content_orders">
+      <h3>История заказов</h3>
+      <div class="rowmin order_filters">
+        <div class="of_title"><span>Показать заказы:</span></div>
+        <div class="of_filter_date clearfix">
+          <label for="" class="label_left">
+            <span>от</span>
+            <div class="input-group date" data-show="0">
+              <input type="text" class="form-control datepicker" name="orders_filter[date_added][to]" value="" data-date-format="DD.MM.YY">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+              </span>
+            </div>
+          </label>
+          <label for="" class="label_left">
+            <span>до</span>
+            <div class="input-group date" data-show="0">
+              <input type="text" class="form-control datepicker" name="orders_filter[date_added][from]" value="" data-date-format="DD.MM.YY">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button>
+              </span>
+            </div>
+          </label>
+        </div>
+        <div class="of_filter_status">
+          <div class="col">
+            <div class="inputs"><input id="status_active" type="radio" name="orders_filter[order_status_id]" value="0"><label for="status_active">Активные</label></div>
+          </div>
+          <div class="col">
+            <div class="inputs"><input id="status_close" type="radio" name="orders_filter[order_status_id]" value="5"><label for="status_close">Завершенные</label></div>
+          </div>
+        </div>
+        <div class="of_filter_reset"><span onclick="reset_filter_orders();">Очистить фильтр</span></div>
+        <div class="of_report">
+          <a class="btn_gold" href="#" target="_blank" download onclick="orders_report(); event.preventDefault();">
+            <div id="fountainG" class="loading">
+              <div id="fountainG_1" class="fountainG"></div>
+              <div id="fountainG_2" class="fountainG"></div>
+              <div id="fountainG_3" class="fountainG"></div>
+              <div id="fountainG_4" class="fountainG"></div>
+              <div id="fountainG_5" class="fountainG"></div>
+              <div id="fountainG_6" class="fountainG"></div>
+              <div id="fountainG_7" class="fountainG"></div>
+              <div id="fountainG_8" class="fountainG"></div>
+            </div>
+            <span>Выгрузка за период</span>
+          </a>
+        </div>
       </div>
-      <div class="row">
-        <div class="col-sm-6 text-left">{{ pagination }}</div>
-        <div class="col-sm-6 text-right">{{ results }}</div>
+      <div class="orders_list">
+        <div class="rowmin">
+          {% if orders %}
+          {% for order in orders %}
+            <div class="col-sm-12">
+              <div class="order_block" data-order="{{ order.order_id }}">
+                <div class="rowmin">
+                  <div class="data_block clearfix">
+                    <div class="rowmin clearfix">
+                      <div class="order_id">№ Заказа <span>{{ order.order_id }}</span></div>
+                      <div class="order_data">Дата: <span>{{ order.date_added }}</span></div>
+                    </div>
+                    <div class="rowmin">
+                      <div class="num_quantity">
+                        <p>Позиций: <span>{{ order.products }}</span></p>
+                        <p>Товаров: <span>{{ order.quantity }}</span></p>
+                      </div>
+                      <div class="total_status">
+                        <p>Итого: <span>{{ order.total }}</span></p>
+                        <p class="status" data-status-id="{{order.status_id}}">Статус: <span>{{ order.status }}</span></p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="btn_block clearfix">
+                    <div class="abtn order_repeat" onclick="order_repeat({{ order.order_id }});"><span>Повторить заказ</span></div>
+                    <div class="abtn order_detail" data-toggle="modal" data-target="#order_detail" onclick="order_detail({{ order.order_id }});"><span>Посмотреть детали</span></div>
+                    <div class="abtn order_report" onclick="order_act({{ order.order_id }});"><span>Запросить акты</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+          {% endif %}
+        </div>
+        <div class="pagination_result">
+          {% if pagination %}
+            {% if next_page %}
+            <div class="pagination_more"><div class="more_product" onclick="more_orders({{next_page}});">Показать еще</div></div>
+            {% endif %}
+          <div class="pagination_block">{{ pagination }}</div>
+          {% endif %}
+          <div class="result_block">{{ results }}</div>
+        </div>
       </div>
-      {% else %}
-      <p>{{ text_empty }}</p>
-      {% endif %}
-      <div class="buttons clearfix">
-        <div class="pull-right"><a href="{{ continue }}" class="btn btn-primary">{{ button_continue }}</a></div>
-      </div>
-      {{ content_bottom }}</div>
-    {{ column_right }}</div>
+    </div>
+  </div>
 </div>
+
+<div class="modal fade" id="order_detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog _detail">
+    <div class="modal-content">
+      <p class="close" data-dismiss="modal" aria-hidden="true"></p>
+        <div class="container-big-modal">
+        </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $('.date').datetimepicker({
+    language: 'ru',
+    maxDate: '{{ date_now }}',
+    pickTime: false
+  });
+
+  $('.date').on('dp.show', function(){
+    $(this).data('show', 1);
+  });
+
+  $('.date').on('dp.hide', function(){    
+    if($(this).data('show') == 1){
+      //console.log($(this).children('.datepicker').val());
+      filter_orders();
+      $(this).data('show', 0);
+    }
+  });
+
+  $('.datepicker').click(function(){
+    $(this).next().trigger('click');
+  });
+
+  function filter_orders(page){
+    var filter_orders = {};
+    
+    $('.order_filters input').each(function(){
+      if($(this).attr('type') == 'text' && $(this).val() != ''){
+        filter_orders[$(this).attr('name')] = $(this).val();
+      }
+
+      if($(this).attr('type') == 'radio' && $(this).is(':checked')){
+        filter_orders[$(this).attr('name')] = $(this).val();
+      }
+    });
+
+    if(page) filter_orders['page'] = page;
+
+    //console.log(filter_orders);
+
+    $.ajax({
+      url: 'index.php?route=account/order/filter',
+      data: filter_orders,
+      type: 'get',
+      dataType: 'html',
+      success: function(html){
+        if(page){
+          $('.orders_list .pagination_result').detach();
+          $('.orders_list').append(html);
+        } else {
+          $('.orders_list').html(html);
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError){
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+
+    $('.of_report .btn_gold').removeClass('success').attr('onclick', 'orders_report(); event.preventDefault();');
+  }
+
+  function reset_filter_orders() {
+    $('.order_filters input[type="text"]').val('');
+    $('.order_filters input[type="radio"]').removeAttr('checked');
+    $('.date').data('show', 0);
+
+    filter_orders();
+  }
+
+  $('.of_filter_status input').change(function(){
+    filter_orders();
+  });
+
+  function more_orders(page){
+    filter_orders(page);
+  }
+
+  function orders_report(){
+    var filter_orders = {};
+    
+    $('.order_filters input').each(function(){
+      if($(this).attr('type') == 'text' && $(this).val() != ''){
+        filter_orders[$(this).attr('name')] = $(this).val();
+      }
+
+      if($(this).attr('type') == 'radio' && $(this).is(':checked')){
+        filter_orders[$(this).attr('name')] = $(this).val();
+      }
+    });
+
+    console.log(filter_orders);
+
+    $.ajax({
+      url: 'index.php?route=account/order/report',
+      data: filter_orders,
+      type: 'get',
+      dataType: 'json',
+      beforeSend: function() {
+        $('.of_report .btn_gold').children('.loading').addClass('on');
+      },
+      success: function(json){
+        console.log(json);
+
+        if(json.file){
+          $('.of_report .btn_gold').children('.loading').removeClass('on');
+          $('.of_report .btn_gold').addClass('success').removeAttr('onclick').attr('href', json.file);
+          $('.of_report .btn_gold > span').html('Документ сформирован<br>скачать');
+        } else {
+          $('.of_report .btn_gold').children('.loading').removeClass('on');
+        }
+      },
+      error: function(xhr, ajaxOptions, thrownError){
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  }
+
+  function order_repeat(order_id){
+    $.ajax({
+      url: 'index.php?route=account/order/repeat',
+      data: {order_id: order_id},
+      type: 'get',
+      dataType: 'json',
+      success: function(json){
+        console.log(json);
+        $('.order_block[data-order="'+order_id+'"]').find('.order_repeat > span').text('Товары в корзине');
+
+        $('._cart_header').attr('data-count', json['count_cart']);
+      },
+      error: function(xhr, ajaxOptions, thrownError){
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  }
+
+  function order_act(order_id){
+    var order_report = $('.order_block[data-order="'+order_id+'"]').find('.order_report');
+    if(!order_report.hasClass('disabled')){
+      order_report.addClass('disabled');
+
+      $.ajax({
+        url: 'index.php?route=account/order/set_act',
+        data: {order_id: order_id},
+        type: 'get',
+        dataType: 'json',
+        success: function(json){
+          order_report.children('span').text('Акт запрошен');
+        },
+        error: function(xhr, ajaxOptions, thrownError){
+          console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+      });
+    }
+  }
+
+  function order_detail(order_id){
+    $.ajax({
+      url: 'index.php?route=account/order/detail',
+      data: {order_id: order_id},
+      type: 'get',
+      dataType: 'html',
+      success: function(html){
+        $('#order_detail .container-big-modal').html(html);
+      },
+      error: function(xhr, ajaxOptions, thrownError){
+        console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      }
+    });
+  }
+</script>
 {{ footer }}
+

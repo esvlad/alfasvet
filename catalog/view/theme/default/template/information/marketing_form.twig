@@ -1,0 +1,105 @@
+<form id="marketing_form" class="form-horizontal form-vakancy">
+  <div class="form_block">
+    <div class="form_title clearfix">
+      <h3>Заявка на бесплатный стенд</h3>
+      <p>Для того чтобы получить стенд бесплатно, нужно приобрести 20&nbsp;светильников. Каждая панель будет укомплектована тем светильником, который вы&nbsp;выбрали.</p>
+    </div>
+    <div class="rowmin">
+      <div class="col-sm-6 col-xs-12">
+        <div class="form-group required">
+          <div class="col-sm-12">
+            <label for="" class="control-label">Имя</label>
+            <input type="text" id="m-name" class="form-control" name="name" value="">
+          </div>
+        </div>
+        <div class="form-group required">
+          <div class="col-sm-12">
+            <label for="" class="control-label">Телефон</label>
+            <input type="tel" id="m-phone" class="form-control" name="phone" value="">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xs-12">
+        <div class="form-group required">
+          <div class="col-sm-12">
+            <label for="" class="control-label">E-mail</label>
+            <input type="email" id="m-mail" class="form-control" name="email" value="">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-12">
+            <label for="" class="control-label">Город</label>
+            <input type="text" id="m-city" class="form-control" name="city" value="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="rowmin">
+      <div class="col-sm-6 col-xs-12">
+        <div id="marketing-btn" class="btn_gold"><span>Отправить</span></div>
+      </div>
+      <div class="col-sm-6 col-xs-12">
+        <p class="politics">Нажимая на кнопку, вы соглашаетесь с условиями <a href="{{politics}}" target="_blank">политики конфиденциальности и обработки персональных данных</a></p>
+      </div>
+    </div>
+  </div>
+  <div class="form_success"><span>Спасибо, ваша заявка отправлена!</span></div>
+</form>
+<script>
+  $('#marketing-btn').click(function(){
+    var self = $(this).parents('.form-horizontal');
+    var form_data = {};
+    var error_form = false;
+    self.find('input, label').removeClass('_error');
+
+    self.find('.form-group.required input').each(function(){
+      if($(this).val() == ''){
+        $(this).addClass('_error');
+        $(this).prev().addClass('_error');
+        error_form = true;
+      } else {
+        form_data[$(this).attr('name')] = $(this).val();
+      }
+    });
+
+    if(!error_form){
+      self.find('.form-group input').each(function(){
+        form_data[$(this).attr('name')] = $(this).val();
+      });
+
+      form_data['uri'] = location.href;
+      form_data['page'] = $('input[name="title_page"]').val();
+
+      $.ajax({
+        url: 'index.php?route=common/footer/marketing',
+        type: 'post',
+        data: form_data,
+        dataType: 'json',
+        complete: function() {
+            //self.find('.btn_review').text('Отправляется');
+        },
+        success: function(json) {
+          console.log(json);
+
+          if(json.success){
+            self.find('.form_block').animate({'opacity': 0}, 150);
+            self.find('.form_success').fadeIn(150);
+
+            setTimeout(function(){
+              self.find('input').each(function(){
+                $(this).val('');
+              });
+
+              self.find('.form_success').fadeOut(150);
+              self.find('.form_block').animate({'opacity': 1}, 150);
+            }, 3500);
+          }
+        }
+      });
+    }
+  });
+
+  $('input[type="tel"]').bind('input', function(e){
+    this.value = this.value.replace(/[^\d]/g,'');
+  });
+</script>

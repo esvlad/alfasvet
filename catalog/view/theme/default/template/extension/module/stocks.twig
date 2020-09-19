@@ -1,0 +1,11 @@
+<div class="panel panel-default">
+  <div class="panel-heading">{{ heading_title }}</div>
+  <div class="panel-body">
+  {% for posts in all_posts %} 
+	<div style="margin-bottom:10px; padding-bottom: 5px; border-bottom:1px solid #eee;">
+	  <a href="{{ posts['view'] }}">{{ posts['title'] }}</a><span style="float:right;">{{ posts['date_added'] }}</span><br />
+	  {{ posts['description'] }} 
+	</div>
+  {% endfor %} 
+  </div>
+</div>

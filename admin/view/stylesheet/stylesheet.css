@@ -414,6 +414,12 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 	content: " \f107";
 	font-family: FontAwesome;
 }
+.table.table-sale-alfa tbody > tr > td{
+	vertical-align: top;
+}
+.table.table-sale-alfa p{
+	margin-bottom: 6px;
+}
 .pagination {
 	margin: 0;
 }
@@ -424,6 +430,17 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 }
 .form-group + .form-group {
 	border-top: 1px solid #ededed;
+}
+#filter-order .form-group + .form-group,
+#filter-product .form-group + .form-group,
+#filter-customer .form-group + .form-group{
+	border-top: 0;
+}
+#filter-order .form-group,
+#filter-product .form-group,
+#filter-customer .form-group{
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 /* Panels */
 .panel {
@@ -802,3 +819,25 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 .opencart-icon-cart-mini:before {
 	content: "\e91c";
 }
+
+.CodeMirror{
+	height: 700px !important;
+    font-size: 15px !important;
+}
+
+.CodeMirror ~ .pull-right > .btn-danger{
+	display: none !important;
+}
+
+.CodeMirror div.CodeMirror-cursor{
+	border-left: 1px solid white !important;
+}
+
+.banners .image-rows .colors:not(:last-child){
+	margin-bottom: 10px;
+}
+
+/*#option-value thead .text-center,
+#option-value tbody .text-left{
+	display: none;
+}*/

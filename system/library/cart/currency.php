@@ -46,9 +46,11 @@ class Currency {
 
 		$string .= number_format($amount, (int)$decimal_place, $this->language->get('decimal_point'), $this->language->get('thousand_point'));
 
-		if ($symbol_right) {
+		/*if ($symbol_right) {
 			$string .= $symbol_right;
-		}
+		}*/
+
+		//$string .= ' Р';
 
 		return $string;
 	}
